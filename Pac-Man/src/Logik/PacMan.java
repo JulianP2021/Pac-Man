@@ -11,6 +11,7 @@ public class PacMan {
 		this.ypos = ypos;
 		this.leben = leben;
 		this.chase = chase;
+		System.out.println(xpos+" "+ ypos);
 	}
 	public int getXpos() {
 		return xpos;

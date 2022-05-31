@@ -19,7 +19,7 @@ public class Master extends Kaestchen {
 		super(50, 50, felderanzahl, felderanzahl);
 		ladeMatrix("Map","schwarz");
 		p = new PacMan(felderanzahl / 2, felderanzahl / 2, 3, false);
-		
+		farbeSetzen(10, 6, "rot");
 		createGeister();
 		
 		zeichnePacManundGeister();
@@ -62,6 +62,13 @@ public class Master extends Kaestchen {
 							}
 						}
 					}
+					for(Geist g : geister) {
+						g.findeWegZuPacMan(g.getX(), g.getY(), p.getXpos(), p.getYpos());
+					}
+//					for(Geist g : geister) {
+//						g.setX(g.getX());
+//						g.setY(g.getY()-1);
+//					}
 					zeichnePacManundGeister();
 				}
 			}
@@ -72,10 +79,11 @@ public class Master extends Kaestchen {
 	
 	private void createGeister() {
 		for(int x = 1;x<=felderanzahl;x++) {
-			for(int y = 1;x<=felderanzahl;x++) {
+			for(int y = 1;y<=felderanzahl;y++) {
 				if(farbeGeben(x, y) == "rot") {
 					Geist g = new Geist(x,y,true);
 					geister.add(g);
+					System.out.println("geist geaddet");
 				}
 			}
 		}
@@ -84,6 +92,10 @@ public class Master extends Kaestchen {
 
 	private void zeichnePacManundGeister() {
 		this.farbeSetzen(p.getXpos(), p.getYpos(), "gelb");
+		
+		for(Geist g : geister) {
+			this.farbeSetzen(g.getX(), g.getY(), "rot");
+		}
 	}
 
 	private boolean keineWand() {
