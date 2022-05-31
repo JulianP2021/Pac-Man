@@ -22,7 +22,7 @@ public class Master extends Kaestchen {
 		
 		createGeister();
 		
-		zeichnePacMan();
+		zeichnePacManundGeister();
 
 		Thread t = new Thread(new Runnable() {
 
@@ -40,34 +40,29 @@ public class Master extends Kaestchen {
 							if (keineWand()) {
 								farbeLoeschen(p.getXpos(), p.getYpos());
 								p.setXpos(p.getXpos() - 1);
-								zeichnePacMan();
 							}
-
 						}
 						if (taste.equals("D")) {
 							if (keineWand()) {
 								farbeLoeschen(p.getXpos(), p.getYpos());
-								p.setXpos(p.getXpos() + 1);
-								zeichnePacMan();
+								p.setXpos(p.getXpos() + 1);		
 							}
-
 						}
 						if (taste.equals("W")) {
 							if (keineWand()) {
 								farbeLoeschen(p.getXpos(), p.getYpos());
 								p.setYpos(p.getYpos() - 1);
-								zeichnePacMan();
 							}
-
 						}
 						if (taste.equals("S")) {
 							if (keineWand()) {
 								farbeLoeschen(p.getXpos(), p.getYpos());
 								p.setYpos(p.getYpos() + 1);
-								zeichnePacMan();
+								
 							}
 						}
 					}
+					zeichnePacManundGeister();
 				}
 			}
 
