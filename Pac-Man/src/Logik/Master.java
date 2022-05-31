@@ -1,5 +1,7 @@
 package Logik;
 
+import java.util.ArrayList;
+
 import Viualisierung.Kaestchen;
 
 public class Master extends Kaestchen {
@@ -7,6 +9,7 @@ public class Master extends Kaestchen {
 	PacMan p;
 	static int felderanzahl = 20;
 	String taste = null;
+	ArrayList<Geist> geister = new ArrayList<Geist>();
 
 	public static void main(String[] args) {
 		new Master();
@@ -16,6 +19,9 @@ public class Master extends Kaestchen {
 		super(50, 50, felderanzahl, felderanzahl);
 		ladeMatrix("Map","schwarz");
 		p = new PacMan(felderanzahl / 2, felderanzahl / 2, 3, false);
+		
+		createGeister();
+		
 		zeichnePacMan();
 
 		Thread t = new Thread(new Runnable() {
@@ -69,7 +75,19 @@ public class Master extends Kaestchen {
 		t.start();
 	}
 	
-	private void zeichnePacMan() {
+	private void createGeister() {
+		for(int x = 1;x<=felderanzahl;x++) {
+			for(int y = 1;x<=felderanzahl;x++) {
+				if(farbeGeben(x, y) == "rot") {
+					Geist g = new Geist(x,y,true);
+					geister.add(g);
+				}
+			}
+		}
+		
+	}
+
+	private void zeichnePacManundGeister() {
 		this.farbeSetzen(p.getXpos(), p.getYpos(), "gelb");
 	}
 
