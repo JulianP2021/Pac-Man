@@ -1,10 +1,10 @@
 package Logik;
 
 public class PacMan {
-	int xpos;
-	int ypos;
-	int leben;
-	boolean chase = false;
+	private int xpos;
+	private int ypos;
+	private int leben;
+	private boolean chase = false;
 	
 	public PacMan(int xpos, int ypos, int leben, boolean chase) {
 		this.xpos = xpos;

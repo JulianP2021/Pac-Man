@@ -7,7 +7,7 @@ import Viualisierung.Kaestchen;
 public class Master extends Kaestchen {
 
 	PacMan p;
-	static int felderanzahl = 20;
+	static int felderanzahl = 28;
 	String taste = null;
 	ArrayList<Geist> geister = new ArrayList<Geist>();
 
@@ -16,10 +16,10 @@ public class Master extends Kaestchen {
 	}
 
 	public Master() {
-		super(50, 50, felderanzahl, felderanzahl);
+		super(40, 40, felderanzahl, 32);
 		ladeMatrix("Map","schwarz");
-		p = new PacMan(felderanzahl / 2, felderanzahl / 2, 3, false);
-		farbeSetzen(10, 6, "rot");
+		p = new PacMan(felderanzahl / 2, 16, 3, false);
+		farbeSetzen(10, 6, "rot");a
 		createGeister();
 		
 		zeichnePacManundGeister();
@@ -62,13 +62,9 @@ public class Master extends Kaestchen {
 							}
 						}
 					}
-					for(Geist g : geister) {
-						g.findeWegZuPacMan(g.getX(), g.getY(), p.getXpos(), p.getYpos());
-					}
-//					for(Geist g : geister) {
-//						g.setX(g.getX());
-//						g.setY(g.getY()-1);
-//					}
+					
+					
+					
 					zeichnePacManundGeister();
 				}
 			}
@@ -81,9 +77,20 @@ public class Master extends Kaestchen {
 		for(int x = 1;x<=felderanzahl;x++) {
 			for(int y = 1;y<=felderanzahl;y++) {
 				if(farbeGeben(x, y) == "rot") {
-					Geist g = new Geist(x,y,true);
+					Geist g = new Geist("Blinky",x,y,Geist.CHASE);
 					geister.add(g);
-					System.out.println("geist geaddet");
+				}
+				if(farbeGeben(x, y) == "pink") {
+					Geist g = new Geist("Pinky",x,y,Geist.CHASE);
+					geister.add(g);
+				}
+				if(farbeGeben(x, y) == "blau") {
+					Geist g = new Geist("Inky",x,y,Geist.CHASE);
+					geister.add(g);
+				}
+				if(farbeGeben(x, y) == "orange") {
+					Geist g = new Geist("Clyde",x,y,Geist.CHASE);
+					geister.add(g);
 				}
 			}
 		}
@@ -94,6 +101,7 @@ public class Master extends Kaestchen {
 		this.farbeSetzen(p.getXpos(), p.getYpos(), "gelb");
 		
 		for(Geist g : geister) {
+			//@TODO andere Gesiter
 			this.farbeSetzen(g.getX(), g.getY(), "rot");
 		}
 	}
