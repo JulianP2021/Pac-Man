@@ -7,7 +7,7 @@ import Viualisierung.Kaestchen;
 public class Master extends Kaestchen {
 
 	PacMan p;
-	static int felderanzahl = 28;
+	static int felderanzahl = 29;
 	String taste = null;
 	ArrayList<Geist> geister = new ArrayList<Geist>();
 
@@ -17,10 +17,11 @@ public class Master extends Kaestchen {
 
 	public Master() {
 		super(40, 40, felderanzahl, 32);
-		ladeMatrix("Map","schwarz");
-		p = new PacMan(felderanzahl / 2, 16, 3, false);
-		farbeSetzen(10, 6, "rot");a
+		p = new PacMan(15, 16, 3, false);
+		ladeMatrix("Map");
+		farbeSetzen(2, 2, "rot");
 		createGeister();
+		hintergrundbildSetzen("Pac-ManHintergrund.jpg");
 		
 		zeichnePacManundGeister();
 
@@ -132,12 +133,12 @@ public class Master extends Kaestchen {
 	
 	@Override
 	public void tasteClickCtrl(String taste) {
-		speichereMatrix("Map","schwarz");
+		speichereMatrix("Map","grün");
 	}
 
 	@Override
 	public void mausLeftClick(int x, int y) {
-		farbeSetzen(x, y, "schwarz");
+		farbeSetzen(x, y, "grün");
 		
 	}
 	

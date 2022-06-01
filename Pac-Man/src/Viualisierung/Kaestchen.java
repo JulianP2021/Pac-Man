@@ -250,7 +250,7 @@ public abstract class Kaestchen extends JFrame {
 			return farbeDurchsichtig;
 		if (farbe.equals("weiÃŸ"))
 			return Color.WHITE;
-		else if (farbe.equals("grÃ¼n"))
+		else if (farbe.equals("grün"))
 			return Color.GREEN;
 		else if (farbe.equals("rot"))
 			return Color.RED;
@@ -298,7 +298,7 @@ public abstract class Kaestchen extends JFrame {
 		else if (matrix[x - 1][y - 1].equals(farbeDurchsichtig))
 			return "durchsichtig";
 		else if (matrix[x - 1][y - 1].equals(Color.GREEN))
-			return "grÃ¼n";
+			return "grün";
 		else if (matrix[x - 1][y - 1].equals(Color.RED))
 			return "rot";
 		else if (matrix[x - 1][y - 1].equals(Color.BLUE))
