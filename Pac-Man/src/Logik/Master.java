@@ -7,6 +7,7 @@ import Viualisierung.Kaestchen;
 public class Master extends Kaestchen {
 
 	PacMan p;
+	static ArrayList<Knotenpunkt> knotenpunkte = new ArrayList<>();
 	static int felderanzahl = 29;
 	String taste = null;
 	ArrayList<Geist> geister = new ArrayList<Geist>();
@@ -19,12 +20,20 @@ public class Master extends Kaestchen {
 		super(40, 40, felderanzahl, 32);
 		p = new PacMan(15, 16, 3, false);
 		ladeMatrix("Map");
-		farbeSetzen(2, 2, "rot");
+		farbeSetzen(15, 14, "rot");
 		createGeister();
-		hintergrundbildSetzen("Pac-ManHintergrund.jpg");
-		
 		zeichnePacManundGeister();
 
+		for(int i = 1;i<felderanzahl;i++) {
+			for(int j = 1;j<felderanzahl;j++) {
+				if(!farbeGeben(i, j).equals("grün")) {
+					Knotenpunkt k = new Knotenpunkt(i, j);
+					knotenpunkte.add(k);
+				}
+				
+			}
+		}
+		
 		Thread t = new Thread(new Runnable() {
 
 			@Override
@@ -38,33 +47,31 @@ public class Master extends Kaestchen {
 					}
 					if (taste != null) {
 						if (taste.equals("A")) {
-							if (keineWand()) {
+							if (keineWand(taste,p.getXpos(),p.getYpos())) {
 								farbeLoeschen(p.getXpos(), p.getYpos());
 								p.setXpos(p.getXpos() - 1);
 							}
 						}
 						if (taste.equals("D")) {
-							if (keineWand()) {
+							if (keineWand(taste,p.getXpos(),p.getYpos())) {
 								farbeLoeschen(p.getXpos(), p.getYpos());
 								p.setXpos(p.getXpos() + 1);		
 							}
 						}
 						if (taste.equals("W")) {
-							if (keineWand()) {
+							if (keineWand(taste,p.getXpos(),p.getYpos())) {
 								farbeLoeschen(p.getXpos(), p.getYpos());
 								p.setYpos(p.getYpos() - 1);
 							}
 						}
 						if (taste.equals("S")) {
-							if (keineWand()) {
+							if (keineWand(taste,p.getXpos(),p.getYpos())) {
 								farbeLoeschen(p.getXpos(), p.getYpos());
 								p.setYpos(p.getYpos() + 1);
 								
 							}
 						}
 					}
-					
-					
 					
 					zeichnePacManundGeister();
 				}
@@ -78,21 +85,23 @@ public class Master extends Kaestchen {
 		for(int x = 1;x<=felderanzahl;x++) {
 			for(int y = 1;y<=felderanzahl;y++) {
 				if(farbeGeben(x, y) == "rot") {
-					Geist g = new Geist("Blinky",x,y,Geist.CHASE);
+					Geist g = new Geist("Blinky",x,y,Geist.CHASE,this);
 					geister.add(g);
+					System.out.println("Geist created bei " + x + " " + y);
 				}
 				if(farbeGeben(x, y) == "pink") {
-					Geist g = new Geist("Pinky",x,y,Geist.CHASE);
+					Geist g = new Geist("Pinky",x,y,Geist.CHASE,this);
 					geister.add(g);
 				}
 				if(farbeGeben(x, y) == "blau") {
-					Geist g = new Geist("Inky",x,y,Geist.CHASE);
+					Geist g = new Geist("Inky",x,y,Geist.CHASE,this);
 					geister.add(g);
 				}
 				if(farbeGeben(x, y) == "orange") {
-					Geist g = new Geist("Clyde",x,y,Geist.CHASE);
+					Geist g = new Geist("Clyde",x,y,Geist.CHASE,this);
 					geister.add(g);
 				}
+				
 			}
 		}
 		
@@ -101,25 +110,26 @@ public class Master extends Kaestchen {
 	private void zeichnePacManundGeister() {
 		this.farbeSetzen(p.getXpos(), p.getYpos(), "gelb");
 		
+		
 		for(Geist g : geister) {
 			//@TODO andere Gesiter
 			this.farbeSetzen(g.getX(), g.getY(), "rot");
 		}
 	}
 
-	private boolean keineWand() {
+	public boolean keineWand(String taste,int x,int y) {
 		
 		if (taste.equals("W")) {
-			return farbeGeben(p.getXpos(),p.getYpos()-1)=="durchsichtig";
+			return farbeGeben(x,y-1)=="durchsichtig" || farbeGeben(x,y-1)=="gelb";
 		}
 		if (taste.equals("A")) {
-			return farbeGeben(p.getXpos()-1,p.getYpos())=="durchsichtig";
+			return farbeGeben(x-1,y)=="durchsichtig" || farbeGeben(x-1,y)=="gelb";
 		}
 		if (taste.equals("S")) {
-			return farbeGeben(p.getXpos(),p.getYpos()+1)=="durchsichtig";
+			return farbeGeben(x,y+1)=="durchsichtig" || farbeGeben(x,y+1)=="gelb";
 		}
 		if (taste.equals("D")) {
-			return farbeGeben(p.getXpos()+1,p.getYpos())=="durchsichtig";
+			return farbeGeben(x+1,y)=="durchsichtig" || farbeGeben(x+1,y)=="gelb";
 		}
 		return false;
 	}
