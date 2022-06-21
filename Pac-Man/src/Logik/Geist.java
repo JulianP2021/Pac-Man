@@ -168,9 +168,8 @@ public class Geist {
 			warteschlange.clear();
 			for(Knotenpunkt k : warteschlange2) {
 				warteschlange.addAll(getanknüpfendeknoten(k));
-				
 			}
-			warteschlange.clear();
+			System.out.println(warteschlange);
 //			
 		}
 		System.out.println("ad");
