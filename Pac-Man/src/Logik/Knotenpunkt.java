@@ -1,11 +1,13 @@
 package Logik;
 
+import java.util.ArrayList;
+
 public class Knotenpunkt {
 	
 	int x,y;
 	int distanz = 1000000;
 	Knotenpunkt vorgänger;
-	Knotenpunkt[] weg;
+	ArrayList<Knotenpunkt> weg = new ArrayList<Knotenpunkt>();;
 	boolean used = false;
 	
 	
@@ -14,9 +16,9 @@ public class Knotenpunkt {
 		this.y = y;
 	}
 	
-	public void setWeg(Knotenpunkt[] weg) {
-		if(weg.length<this.distanz) {
-			distanz = weg.length;
+	public void setWeg(ArrayList<Knotenpunkt> weg) {
+		if(weg.size()<this.distanz) {
+			distanz = weg.size();
 		}
 		this.weg = weg;
 	}
