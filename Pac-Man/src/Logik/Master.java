@@ -38,7 +38,7 @@ public class Master extends Kaestchen {
 
 			@Override
 			public void run() {
-				while (true) {
+//				while (true) {
 					try {
 						Thread.sleep(300);
 					} catch (InterruptedException e) {
@@ -78,7 +78,7 @@ public class Master extends Kaestchen {
 					}
 					zeichnePacManundGeister();
 				}
-			}
+//			}
 
 		});
 		t.start();

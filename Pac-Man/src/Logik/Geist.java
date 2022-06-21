@@ -2,8 +2,6 @@ package Logik;
 
 import java.util.ArrayList;
 
-import Viualisierung.Kaestchen;
-
 public class Geist {
 	
 	ArrayList<Knotenpunkt> warteschlange = new ArrayList<Knotenpunkt>();
@@ -58,40 +56,127 @@ public class Geist {
 				kl = k;
 			}
 		}
-		findeWegK(xStart,yStart,xZiel,yZiel,kn,kl);
+		if(kn!= null && kl != null) {
+			findeWegK(xStart,yStart,xZiel,yZiel,kn,Master.knotenpunkte.indexOf(kl));
+		}else {
+			System.out.println("Unlucky");
+		}
+		
+		
+		
 	}
 	
-	void findeWegK(int xStart,int yStart,int xZiel,int yZiel,Knotenpunkt anfangsknoten, Knotenpunkt zielknoten){
-		ArrayList<Knotenpunkt> anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
-		boolean nichtjederpunktüberprüft = true;
-		warteschlange.add(anfangsknoten);
-		ArrayList<Knotenpunkt> warteschlange2 = new ArrayList<Knotenpunkt>();
-		while(nichtjederpunktüberprüft ) {
-//			System.out.println("Ka");
-			anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
-			for(Knotenpunkt p : warteschlange) {
-				anknüpfendeKnoten = getanknüpfendeknoten(p);
-				for(Knotenpunkt k : anknüpfendeKnoten) {
-					warteschlange2.add(k);
-				}
+//	void findeWegK(int xStart,int yStart,int xZiel,int yZiel,Knotenpunkt anfangsknoten, Knotenpunkt zielknoten){
+//		ArrayList<Knotenpunkt> anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
+//		int i = 0;
+//		boolean nichtjederpunktüberprüft = true;
+//		warteschlange.add(anfangsknoten);
+////		ArrayList<Knotenpunkt> warteschlange2 = new ArrayList<Knotenpunkt>();
+//		while(nichtjederpunktüberprüft) {
+////		while(i<10) {
+////			i++;
+////			System.out.println("Ka");
+//			anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
+//			for(Knotenpunkt p : warteschlange) {
+//				anknüpfendeKnoten = getanknüpfendeknoten(p);
+//				for(Knotenpunkt k : anknüpfendeKnoten) {
+//					warteschlange.add(k);
+//				}
+//				warteschlange.remove(warteschlange.indexOf(p));
+//			}
+//			
+//			//Abruchbedingung
+//			int counter = 0;
+//			for(Knotenpunkt k : Master.knotenpunkte) {
+//				if(k.used) {
+//					counter++;
+//				}
+//			}
+//			if(counter == Master.knotenpunkte.size()-5) {
+//				nichtjederpunktüberprüft = false;
+//			}
+//		}
+//		System.out.println("LOL");
+////		WegAblaufen(kn.weg,anfangsknoten);
+//	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	void findeWegK(int xStart,int yStart,int xZiel,int yZiel,Knotenpunkt anfangsknoten, int index){
+		warteschlange.clear();
+		warteschlange.addAll(getanknüpfendeknoten(anfangsknoten));
+		while(Master.knotenpunkte.get(index).weg!=null) {
+			ArrayList<Knotenpunkt> warteschlange2 = warteschlange;
+			warteschlange.clear();
+			for(Knotenpunkt k : warteschlange2) {
+				warteschlange.addAll(getanknüpfendeknoten(k));
+				
 			}
 			warteschlange.clear();
-			warteschlange = warteschlange2;
-			warteschlange2.clear();
-			//Abruchbedingung
-			int counter = 0;
-			for(Knotenpunkt k : Master.knotenpunkte) {
-				if(k.used) {
-					counter++;
-				}
-			}
-			if(counter == Master.knotenpunkte.size()) {
-				nichtjederpunktüberprüft = false;
-			}
+//			
 		}
-		System.out.println(zielknoten.weg);
-//		WegAblaufen(kn.weg,anfangsknoten);
+		System.out.println("ad");
 	}
+	
+	
 
 	private void WegAblaufen(ArrayList<Knotenpunkt> weg,Knotenpunkt anfangsknoten ) {
 		Knotenpunkt lastk = anfangsknoten;
@@ -118,7 +203,7 @@ public class Geist {
 				anknüpfendeKnoten.add(k);
 			}
 		}
-//		System.out.println(anknüpfendeKnoten.size());
+		System.out.println(anknüpfendeKnoten.size());
 		return anknüpfendeKnoten;
 	}
 
