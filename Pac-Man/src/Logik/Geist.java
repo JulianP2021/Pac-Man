@@ -2,41 +2,53 @@ package Logik;
 
 import java.util.ArrayList;
 
-public class Geist {
-	
+public class Geist implements Geister {
+
 	ArrayList<Knotenpunkt> warteschlange = new ArrayList<Knotenpunkt>();
 	ArrayList<Knotenpunkt> erledigt = new ArrayList<Knotenpunkt>();
 	private String name;
 	private int x;
 	private int y;
 	String phase = "";
+	public String bewegungsrichtung = null;
 	static String CHASE = "chase";
 	static String FRIGHTENED = "frightened";
 	static String SCATTER = "scatter";
 	static String EATEN = "eaten";
-	
-	
-	
-	public Geist(String name,int x, int y, String phase, Master m) {
+	Master m;
+	String richtung = null;
+
+	public Geist(String name, int x, int y, String phase, Master m) {
 		this.name = name;
 		this.x = x;
 		this.y = y;
 		this.phase = phase;
+		this.m = m;
 	}
 	
+	@Override
 	public int getX() {
+		// TODO Auto-generated method stub
 		return x;
 	}
-	public void setX(int x) {
-		this.x = x;
-	}
+
+	@Override
 	public int getY() {
+		// TODO Auto-generated method stub
 		return y;
 	}
+
+	@Override
+	public void setX(int x) {
+		// TODO Auto-generated method stub
+		this.x = x;
+	}
+
+	@Override
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -44,171 +56,89 @@ public class Geist {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	void findeWeg(int xStart,int yStart,int xZiel,int yZiel) {
+
+	public void findeWeg(int xZiel, int yZiel) {
 		Knotenpunkt kn = null;
 		Knotenpunkt kl = null;
-		for(Knotenpunkt k : Master.knotenpunkte) {
-			if(k.x == xZiel && k.y == yZiel) {
+		for (Knotenpunkt k : Master.knotenpunkte) {
+			if (k.x == xZiel && k.y == yZiel) {
 				kn = k;
 			}
-			if(k.x == xStart && k.y == yStart) {
+			if (k.x == x && k.y == y) {
 				kl = k;
 			}
 		}
-		if(kn!= null && kl != null) {
-			findeWegK(xStart,yStart,xZiel,yZiel,kn,Master.knotenpunkte.indexOf(kl));
-		}else {
+		if (kn != null && kl != null) {
+			findeWegK(x, y, xZiel, yZiel, kn, kl);
+		} else {
 			System.out.println("Unlucky");
 		}
-		
-		
-		
+
 	}
-	
-//	void findeWegK(int xStart,int yStart,int xZiel,int yZiel,Knotenpunkt anfangsknoten, Knotenpunkt zielknoten){
-//		ArrayList<Knotenpunkt> anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
-//		int i = 0;
-//		boolean nichtjederpunktüberprüft = true;
-//		warteschlange.add(anfangsknoten);
-////		ArrayList<Knotenpunkt> warteschlange2 = new ArrayList<Knotenpunkt>();
-//		while(nichtjederpunktüberprüft) {
-////		while(i<10) {
-////			i++;
-////			System.out.println("Ka");
-//			anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
-//			for(Knotenpunkt p : warteschlange) {
-//				anknüpfendeKnoten = getanknüpfendeknoten(p);
-//				for(Knotenpunkt k : anknüpfendeKnoten) {
-//					warteschlange.add(k);
-//				}
-//				warteschlange.remove(warteschlange.indexOf(p));
-//			}
-//			
-//			//Abruchbedingung
-//			int counter = 0;
-//			for(Knotenpunkt k : Master.knotenpunkte) {
-//				if(k.used) {
-//					counter++;
-//				}
-//			}
-//			if(counter == Master.knotenpunkte.size()-5) {
-//				nichtjederpunktüberprüft = false;
-//			}
-//		}
-//		System.out.println("LOL");
-////		WegAblaufen(kn.weg,anfangsknoten);
-//	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	void findeWegK(int xStart,int yStart,int xZiel,int yZiel,Knotenpunkt anfangsknoten, int index){
+
+	void findeWegK(int xStart, int yStart, int xZiel, int yZiel, Knotenpunkt anfangsknoten, Knotenpunkt Ziel) {
 		warteschlange.clear();
 		warteschlange.addAll(getanknüpfendeknoten(anfangsknoten));
-		while(Master.knotenpunkte.get(index).weg!=null) {
-			ArrayList<Knotenpunkt> warteschlange2 = warteschlange;
+//		System.out.println(warteschlange);
+
+		int i = 0;
+		while (i < (32 * 28)) {
+//		while(Master.knotenpunkte.get(Master.knotenpunkte.indexOf(Ziel)).weg!=null) {
+			i++;
+			@SuppressWarnings("unchecked")
+			ArrayList<Knotenpunkt> warteschlange2 = (ArrayList<Knotenpunkt>) warteschlange.clone();
 			warteschlange.clear();
-			for(Knotenpunkt k : warteschlange2) {
+			for (Knotenpunkt k : warteschlange2) {
 				warteschlange.addAll(getanknüpfendeknoten(k));
 			}
-			System.out.println(warteschlange);
-//			
 		}
-		System.out.println("ad");
-	}
-	
-	
 
-	private void WegAblaufen(ArrayList<Knotenpunkt> weg,Knotenpunkt anfangsknoten ) {
-		Knotenpunkt lastk = anfangsknoten;
-		for(int i = 1;i<weg.size();i++) {
-			if(getPosdelta(weg.get(i), lastk) == 1) {
-				int deltax = weg.get(i).x - lastk.x;
-				int deltay = weg.get(i).y - lastk.y;
-				if(deltax == 1) {
-					
-				}
+		WegAblaufen(Master.knotenpunkte.get(Master.knotenpunkte.indexOf(Ziel)).weg);
+	}
+
+	private void WegAblaufen(ArrayList<Knotenpunkt> weg) {
+		int deltax = Math.abs(weg.get(weg.size() - 2).x - x);
+		int deltay = Math.abs(weg.get(weg.size() - 2).y - y);
+		if (deltax + deltay == 1) {
+			if (weg.get(weg.size() - 2).x - x == 1) {
+				richtung = "rechts";
+			}else if (weg.get(weg.size() - 2).x - x == -1) {
+				richtung = "links";
+			}else if (weg.get(weg.size() - 2).y - y == 1) {
+				richtung = "unten";
+			}else if (weg.get(weg.size() - 2).y - y == -1) {
+				richtung = "oben";
 			}
 		}
+		this.m.färben(weg);
 	}
 
 	private ArrayList<Knotenpunkt> getanknüpfendeknoten(Knotenpunkt anfangsknoten) {
-		//@TODO auf used setzen,distanz setzen
+		// @TODO auf used setzen,distanz setzen
 		ArrayList<Knotenpunkt> anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
-		for(Knotenpunkt k : Master.knotenpunkte) {
-			if(getPosdelta(k,anfangsknoten) == 1 && !k.used) {
+		for (Knotenpunkt k : Master.knotenpunkte) {
+			if (getKnotendelta(k, anfangsknoten) == 1 && !k.used) {
 				k.used = true;
-				ArrayList<Knotenpunkt> kopie = anfangsknoten.weg;
+				@SuppressWarnings("unchecked")
+				ArrayList<Knotenpunkt> kopie = (ArrayList<Knotenpunkt>) anfangsknoten.weg.clone();
 				kopie.add(k);
 				k.setWeg(kopie);
 				anknüpfendeKnoten.add(k);
 			}
 		}
-		System.out.println(anknüpfendeKnoten.size());
 		return anknüpfendeKnoten;
 	}
 
-	private int getPosdelta(Knotenpunkt k, Knotenpunkt anfangsknoten) {
+	private int getKnotendelta(Knotenpunkt k, Knotenpunkt anfangsknoten) {
 		int deltax = Math.abs(k.x - anfangsknoten.x);
 		int deltay = Math.abs(k.y - anfangsknoten.y);
+//		System.out.println(deltax + deltay);
 		return deltax + deltay;
+	}
+
+	@Override
+	public String getRichtung() {
+		// TODO Auto-generated method stub
+		return richtung;
 	}
 }

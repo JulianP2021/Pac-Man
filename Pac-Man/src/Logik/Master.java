@@ -10,7 +10,7 @@ public class Master extends Kaestchen {
 	static ArrayList<Knotenpunkt> knotenpunkte = new ArrayList<>();
 	static int felderanzahl = 29;
 	String taste = null;
-	ArrayList<Geist> geister = new ArrayList<Geist>();
+	ArrayList<Geister> geister = new ArrayList<Geister>();
 
 	public static void main(String[] args) {
 		new Master();
@@ -18,14 +18,14 @@ public class Master extends Kaestchen {
 
 	public Master() {
 		super(40, 40, felderanzahl, 32);
-		p = new PacMan(15, 16, 3, false);
+		p = new PacMan(7,26, 3, false);
 		ladeMatrix("Map");
 		farbeSetzen(15, 14, "rot");
 		createGeister();
 		zeichnePacManundGeister();
 
-		for (int i = 1; i < felderanzahl; i++) {
-			for (int j = 1; j < felderanzahl; j++) {
+		for (int i = 1; i <= felderanzahl; i++) {
+			for (int j = 1; j < 32; j++) {
 				if (!farbeGeben(i, j).equals("grün")) {
 					Knotenpunkt k = new Knotenpunkt(i, j);
 					knotenpunkte.add(k);
@@ -38,7 +38,7 @@ public class Master extends Kaestchen {
 
 			@Override
 			public void run() {
-//				while (true) {
+				while (true) {
 					try {
 						Thread.sleep(300);
 					} catch (InterruptedException e) {
@@ -73,12 +73,28 @@ public class Master extends Kaestchen {
 						}
 					}
 
-					for (Geist g : geister) {
-						g.findeWeg(g.getX(), g.getY(), p.getXpos(), p.getYpos());
+					for (Geister g : geister) {
+						g.findeWeg(p.getXpos(), p.getYpos());
+						switch(g.getRichtung()) {
+						case "oben":
+							g.setY(g.getY()-1);
+							break;
+						case "rechts":
+							g.setX(g.getX()+1);
+							break;
+						case "links":
+							g.setX(g.getX()-1);
+							break;
+						case "unten":
+							g.setY(g.getY()+1);
+							break;
+							
+						}
 					}
+					
 					zeichnePacManundGeister();
 				}
-//			}
+			}
 
 		});
 		t.start();
@@ -88,20 +104,20 @@ public class Master extends Kaestchen {
 		for (int x = 1; x <= felderanzahl; x++) {
 			for (int y = 1; y <= felderanzahl; y++) {
 				if (farbeGeben(x, y).equals("rot")) {
-					Geist g = new Geist("Blinky", x, y, Geist.CHASE, this);
+					Geister g = new Geist("Blinky", x, y, Geist.CHASE, this);
 					geister.add(g);
 					System.out.println("Geist created bei " + x + " " + y);
 				}
 				if (farbeGeben(x, y).equals("pink")) {
-					Geist g = new Geist("Pinky", x, y, Geist.CHASE, this);
+					Geister g = new Geist("Pinky", x, y, Geist.CHASE, this);
 					geister.add(g);
 				}
 				if (farbeGeben(x, y).equals("blau")) {
-					Geist g = new Geist("Inky", x, y, Geist.CHASE, this);
+					Geister g = new Geist("Inky", x, y, Geist.CHASE, this);
 					geister.add(g);
 				}
 				if (farbeGeben(x, y).equals("orange")) {
-					Geist g = new Geist("Clyde", x, y, Geist.CHASE, this);
+					Geister g = new Geist("Clyde", x, y, Geist.CHASE, this);
 					geister.add(g);
 				}
 
@@ -113,7 +129,7 @@ public class Master extends Kaestchen {
 	private void zeichnePacManundGeister() {
 		this.farbeSetzen(p.getXpos(), p.getYpos(), "gelb");
 
-		for (Geist g : geister) {
+		for (Geister g : geister) {
 			// @TODO andere Gesiter
 			this.farbeSetzen(g.getX(), g.getY(), "rot");
 		}
@@ -158,6 +174,12 @@ public class Master extends Kaestchen {
 	public void mausRightClick(int x, int y) {
 		farbeSetzen(x, y, "durchsichtig");
 
+	}
+
+	public void färben(ArrayList<Knotenpunkt> weg) {
+		for(int i = 0;i<weg.size();i++)
+			farbeSetzen(weg.get(i).x, weg.get(i).y, "orange");
+		
 	}
 
 }
