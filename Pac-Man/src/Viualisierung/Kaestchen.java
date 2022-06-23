@@ -229,7 +229,7 @@ public abstract class Kaestchen extends JFrame {
 
 	public void farbeSetzen(int x, int y, String farbe) {
 		if ((x < 1 || x > kaestchenAnzX) || (y < 1 || y > kaestchenAnzY)) {
-			meldungSystem("farbeSetzen(...) wurde außerhalb des Feldes aufgerufen!");
+//			meldungSystem("farbeSetzen(...) wurde außerhalb des Feldes aufgerufen!");
 			return;
 		}
 		matrix[x - 1][y - 1] = gibFarbe(farbe);
@@ -239,7 +239,7 @@ public abstract class Kaestchen extends JFrame {
 
 	public void farbeSetzen(int x, int y, Color farbe) {
 		if ((x < 1 || x > kaestchenAnzX) || (y < 1 || y > kaestchenAnzY)) {
-			meldungSystem("farbeSetzen(...) wurde außerhalb des Feldes aufgerufen!");
+//			meldungSystem("farbeSetzen(...) wurde außerhalb des Feldes aufgerufen!");
 			return;
 		}
 		matrix[x - 1][y - 1] = farbe;
@@ -290,7 +290,7 @@ public abstract class Kaestchen extends JFrame {
 	 */
 	public String farbeGeben(int x, int y) {
 		if ((x < 1 || x > kaestchenAnzX) || (y < 1 || y > kaestchenAnzY)) {
-			meldungSystem("farbeSetzen(...) wurde außerhalb des Feldes aufgerufen!");
+//			meldungSystem("farbeSetzen(...) wurde außerhalb des Feldes aufgerufen!");
 			return "";
 		}
 		if (matrix[x - 1][y - 1].equals(Color.WHITE))
@@ -335,7 +335,7 @@ public abstract class Kaestchen extends JFrame {
 	 */
 	public void farbeLoeschen(int x, int y) {
 		if ((x < 1 || x > kaestchenAnzX) || (y < 1 || y > kaestchenAnzY)) {
-			meldungSystem("farbeLoeschen(...) wurde außerhalb des Feldes aufgerufen!");
+//			meldungSystem("farbeLoeschen(...) wurde außerhalb des Feldes aufgerufen!");
 			return;
 		}
 		matrix[x - 1][y - 1] = farbeDurchsichtig;

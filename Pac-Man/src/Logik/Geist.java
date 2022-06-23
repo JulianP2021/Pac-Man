@@ -10,7 +10,6 @@ public class Geist implements Geister {
 	private int x;
 	private int y;
 	String phase = "";
-	public String bewegungsrichtung = null;
 	static String CHASE = "chase";
 	static String FRIGHTENED = "frightened";
 	static String SCATTER = "scatter";
@@ -57,7 +56,7 @@ public class Geist implements Geister {
 		this.name = name;
 	}
 
-	public void findeWeg(int xZiel, int yZiel) {
+	public String findeWeg(int xZiel, int yZiel) {
 		Knotenpunkt kn = null;
 		Knotenpunkt kl = null;
 		for (Knotenpunkt k : Master.knotenpunkte) {
@@ -69,18 +68,17 @@ public class Geist implements Geister {
 			}
 		}
 		if (kn != null && kl != null) {
-			findeWegK(x, y, xZiel, yZiel, kn, kl);
+			return findeWegK(x, y, xZiel, yZiel, kn, kl);
 		} else {
 			System.out.println("Unlucky");
 		}
-
+		return null;
 	}
 
-	void findeWegK(int xStart, int yStart, int xZiel, int yZiel, Knotenpunkt anfangsknoten, Knotenpunkt Ziel) {
+	String findeWegK(int xStart, int yStart, int xZiel, int yZiel, Knotenpunkt anfangsknoten, Knotenpunkt Ziel) {
+//		System.out.println("xZiel: " + xZiel + " yZiel: " + yZiel);
 		warteschlange.clear();
 		warteschlange.addAll(getanknüpfendeknoten(anfangsknoten));
-//		System.out.println(warteschlange);
-
 		int i = 0;
 		while (i < (32 * 28)) {
 //		while(Master.knotenpunkte.get(Master.knotenpunkte.indexOf(Ziel)).weg!=null) {
@@ -92,25 +90,29 @@ public class Geist implements Geister {
 				warteschlange.addAll(getanknüpfendeknoten(k));
 			}
 		}
-
-		WegAblaufen(Master.knotenpunkte.get(Master.knotenpunkte.indexOf(Ziel)).weg);
+		return WegAblaufen(Master.knotenpunkte.get(Master.knotenpunkte.indexOf(Ziel)).weg);
 	}
 
-	private void WegAblaufen(ArrayList<Knotenpunkt> weg) {
-		int deltax = Math.abs(weg.get(weg.size() - 2).x - x);
-		int deltay = Math.abs(weg.get(weg.size() - 2).y - y);
+	private String WegAblaufen(ArrayList<Knotenpunkt> weg) {
+		int i = 1;
+		if(weg.size() - 2>=0) {
+			i = 2;
+		}	
+		int deltax = Math.abs(weg.get(weg.size() - i).x - x);
+		int deltay = Math.abs(weg.get(weg.size() - i).y - y);
 		if (deltax + deltay == 1) {
-			if (weg.get(weg.size() - 2).x - x == 1) {
+			if (weg.get(weg.size() - i).x - x == 1) {
 				richtung = "rechts";
-			}else if (weg.get(weg.size() - 2).x - x == -1) {
+			}else if (weg.get(weg.size() - i).x - x == -1) {
 				richtung = "links";
-			}else if (weg.get(weg.size() - 2).y - y == 1) {
-				richtung = "unten";
-			}else if (weg.get(weg.size() - 2).y - y == -1) {
-				richtung = "oben";
+			}else if (weg.get(weg.size() - i).y - y == 1) {
+				richtung = "runter";
+			}else if (weg.get(weg.size() - i).y - y == -1) {
+				richtung = "hoch";
 			}
 		}
-		this.m.färben(weg);
+//		this.m.färben(weg);
+		return richtung;
 	}
 
 	private ArrayList<Knotenpunkt> getanknüpfendeknoten(Knotenpunkt anfangsknoten) {
@@ -134,11 +136,5 @@ public class Geist implements Geister {
 		int deltay = Math.abs(k.y - anfangsknoten.y);
 //		System.out.println(deltax + deltay);
 		return deltax + deltay;
-	}
-
-	@Override
-	public String getRichtung() {
-		// TODO Auto-generated method stub
-		return richtung;
 	}
 }
