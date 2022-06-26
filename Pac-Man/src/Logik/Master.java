@@ -12,6 +12,8 @@ public class Master extends Kaestchen {
 	ArrayList<Geister> geister = new ArrayList<Geister>();
 	boolean verloren = false;
 	int timerAufruf = 0;
+	static String mapfarbe = "schwarz";
+	static String borderfarbe = "blau";
 
 	public static void main(String[] args) {
 		new Master();
@@ -19,6 +21,11 @@ public class Master extends Kaestchen {
 
 	public Master() {
 		super(40, 40, felderanzahl, 32);
+//		for (int i = 1; i <= felderanzahl; i++) {
+//			for (int j = 1; j < 32; j++) {
+//				farbeSetzen(i, j, mapfarbe);
+//			}
+//		}
 		reset();
 		zeichnePacManundGeister();
 
@@ -28,17 +35,16 @@ public class Master extends Kaestchen {
 			public void run() {
 				for (int i = 1; i <= felderanzahl; i++) {
 					for (int j = 1; j < 32; j++) {
-						if (!farbeGeben(i, j).equals("grün")) {
+						if (!farbeGeben(i, j).equals(borderfarbe)) {
 							Knotenpunkt k = new Knotenpunkt(i, j);
 							knotenpunkte.add(k);
 						}
-
 					}
 				}
 				while(true) {
 					while (!verloren) {
 						for(Knotenpunkt k : knotenpunkte) {
-							k.used = false;
+							k.reset();
 						}
 						try {
 							Thread.sleep(333);
@@ -124,11 +130,10 @@ public class Master extends Kaestchen {
 	public void clearmap() {
 		for(int i = 1;i<32;i++) {
 			for(int j = 1;j<felderanzahl + 3;j++) {
-				if(!farbeGeben(i, j).equals("grün")) {
-					this.farbeLoeschen(i, j);
-				}
+				this.farbeLoeschen(i, j);
 			}
 		}
+		ladeMatrix("Map");
 	}
 
 	protected void überprüfeSieg() {
@@ -148,13 +153,13 @@ public class Master extends Kaestchen {
 					System.out.println("Geist created bei " + x + " " + y);
 				}
 				if (farbeGeben(x, y).equals("pink")) {
-					Geister g = new GeistSuchtFrau("Pinky", x, y, Geist.CHASE, this);
+					Geister g = new GeistSuchtFrau("Pinky", x, y, "", this);
 					geister.add(g);
 				}
-				if (farbeGeben(x, y).equals("blau")) {
-					Geister g = new Geist("Inky", x, y, Geist.CHASE, this);
-					geister.add(g);
-				}
+//				if (farbeGeben(x, y).equals("blau")) {
+//					Geister g = new Geist("Inky", x, y, Geist.CHASE, this);
+//					geister.add(g);
+//				}
 				if (farbeGeben(x, y).equals("orange")) {
 					Geister g = new Geist("Clyde", x, y, Geist.CHASE, this);
 					geister.add(g);
@@ -208,16 +213,16 @@ public class Master extends Kaestchen {
 	public boolean keineWand(String taste, int x, int y) {
 
 		if (taste.equals("W")) {
-			return farbeGeben(x, y - 1).equals("durchsichtig") || farbeGeben(x, y - 1).equals("gelb");
+			return farbeGeben(x, y - 1).equals(mapfarbe) || farbeGeben(x, y - 1).equals("gelb");
 		}
 		if (taste.equals("A")) {
-			return farbeGeben(x - 1, y).equals("durchsichtig") || farbeGeben(x - 1, y).equals("gelb");
+			return farbeGeben(x - 1, y).equals(mapfarbe) || farbeGeben(x - 1, y).equals("gelb");
 		}
 		if (taste.equals("S")) {
-			return farbeGeben(x, y + 1).equals("durchsichtig") || farbeGeben(x, y + 1).equals("gelb");
+			return farbeGeben(x, y + 1).equals(mapfarbe) || farbeGeben(x, y + 1).equals("gelb");
 		}
 		if (taste.equals("D")) {
-			return farbeGeben(x + 1, y).equals("durchsichtig") || farbeGeben(x + 1, y).equals("gelb");
+			return farbeGeben(x + 1, y).equals(mapfarbe) || farbeGeben(x + 1, y).equals("gelb");
 		}
 		return false;
 	}
@@ -230,19 +235,18 @@ public class Master extends Kaestchen {
 
 	@Override
 	public void tasteClickCtrl(String taste) {
-		speichereMatrix("Map", "grün");
+		//speichereMatrix("Map", "blau");
 	}
 
 	@Override
 	public void mausLeftClick(int x, int y) {
-		farbeSetzen(x, y, "grün");
+		//farbeSetzen(x, y, "blau");
 
 	}
 
 	@Override
 	public void mausRightClick(int x, int y) {
-		farbeSetzen(x, y, "durchsichtig");
-
+		//farbeSetzen(x, y, "scharz");
 	}
 
 	public void färben(ArrayList<Knotenpunkt> weg) {

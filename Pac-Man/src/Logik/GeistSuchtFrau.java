@@ -36,7 +36,7 @@ public class GeistSuchtFrau implements Geister {
 		
 		
 		x=xGeist;y=yGeist-1;
-		if((!(m.farbeGeben(x, y).equals("grün")))&&(!(Richtung.equals("runter")))) {
+		if((!(m.farbeGeben(x, y).equals(Master.borderfarbe)))&&(!(Richtung.equals("runter")))) {
 			
 			abstandX = Math.abs(xZiel - x);
 			abstandY = Math.abs(yZiel - y);
@@ -47,7 +47,7 @@ public class GeistSuchtFrau implements Geister {
 					}
 		}
 		x=xGeist;y=yGeist+1;
-		if((!(m.farbeGeben(x, y).equals("grün")))&&(!(Richtung.equals("hoch")))) {
+		if((!(m.farbeGeben(x, y).equals(Master.borderfarbe)))&&(!(Richtung.equals("hoch")))) {
 			abstandX = Math.abs(xZiel - x);
 			abstandY = Math.abs(yZiel - y);
 			laengeUnten=abstandX*abstandX+abstandY*abstandY;
@@ -57,7 +57,7 @@ public class GeistSuchtFrau implements Geister {
 			}
 		}			
 		x=xGeist+1;y=yGeist;
-		if((!(m.farbeGeben(x, y).equals("grün")))&&(!(Richtung.equals("links")))) {
+		if((!(m.farbeGeben(x, y).equals(Master.borderfarbe)))&&(!(Richtung.equals("links")))) {
 			abstandX = Math.abs(xZiel - x);
 			abstandY = Math.abs(yZiel - y);
 			laengeRechts=abstandX*abstandX+abstandY*abstandY;
@@ -67,7 +67,7 @@ public class GeistSuchtFrau implements Geister {
 			}
 		}
 		x=xGeist-1;y=yGeist;
-		if((!(m.farbeGeben(x, y).equals("grün")))&&(!(Richtung.equals("rechts")))) {
+		if((!(m.farbeGeben(x, y).equals(Master.borderfarbe)))&&(!(Richtung.equals("rechts")))) {
 			abstandX = Math.abs(xZiel - x);
 			abstandY = Math.abs(yZiel - y);
 			laengeLinks=abstandX*abstandX+abstandY*abstandY;

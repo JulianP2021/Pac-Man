@@ -6,7 +6,6 @@ public class Knotenpunkt {
 	
 	int x,y;
 	int distanz = 1000000;
-	Knotenpunkt vorgänger;
 	ArrayList<Knotenpunkt> weg = new ArrayList<Knotenpunkt>();;
 	boolean used = false;
 	boolean claimed = false;
@@ -22,6 +21,12 @@ public class Knotenpunkt {
 			distanz = weg.size();
 		}
 		this.weg = weg;
+	}
+
+	public void reset() {
+		distanz = 1000000;
+		ArrayList<Knotenpunkt> weg = new ArrayList<Knotenpunkt>();;
+		used = false;
 	}
 	
 	
