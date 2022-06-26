@@ -9,6 +9,7 @@ public class Knotenpunkt {
 	Knotenpunkt vorgänger;
 	ArrayList<Knotenpunkt> weg = new ArrayList<Knotenpunkt>();;
 	boolean used = false;
+	boolean claimed = false;
 	
 	
 	public Knotenpunkt(int x, int y) {

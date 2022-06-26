@@ -1,9 +1,6 @@
 package Logik;
 
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
-
 import Viualisierung.Kaestchen;
 
 public class Master extends Kaestchen {
@@ -29,17 +26,19 @@ public class Master extends Kaestchen {
 
 			@Override
 			public void run() {
+				for (int i = 1; i <= felderanzahl; i++) {
+					for (int j = 1; j < 32; j++) {
+						if (!farbeGeben(i, j).equals("grün")) {
+							Knotenpunkt k = new Knotenpunkt(i, j);
+							knotenpunkte.add(k);
+						}
+
+					}
+				}
 				while(true) {
 					while (!verloren) {
-						
-						for (int i = 1; i <= felderanzahl; i++) {
-							for (int j = 1; j < 32; j++) {
-								if (!farbeGeben(i, j).equals("grün")) {
-									Knotenpunkt k = new Knotenpunkt(i, j);
-									knotenpunkte.add(k);
-								}
-
-							}
+						for(Knotenpunkt k : knotenpunkte) {
+							k.used = false;
 						}
 						try {
 							Thread.sleep(333);
@@ -95,8 +94,8 @@ public class Master extends Kaestchen {
 						clearmap();
 						zeichnePacManundGeister();
 						updateTimer();
+						scoreBerechnen();
 					}
-					new JOptionPane();
 				}
 			}
 		});
@@ -106,7 +105,7 @@ public class Master extends Kaestchen {
 	
 	void updateTimer(){
 		timerAufruf++;
-		textSetzen(2, 13, "" + timerAufruf);
+		textSetzen(2, 13, "Zeit " + timerAufruf);
 	}
 	
 	void reset() {
@@ -114,7 +113,10 @@ public class Master extends Kaestchen {
 		geister = new ArrayList<Geister>();
 		p = new PacMan(8,26, 3, false);
 		ladeMatrix("Map");
-		farbeSetzen(2, 3, "rot");
+		farbeSetzen(2, 2, "rot");
+		farbeSetzen(28, 2, "rot");
+		farbeSetzen(2, 29, "pink");
+		farbeSetzen(28, 29, "pink");
 //		farbeSetzen(2, 2, "pink");
 		createGeister();
 	}
@@ -139,7 +141,7 @@ public class Master extends Kaestchen {
 
 	private void createGeister() {
 		for (int x = 1; x <= felderanzahl; x++) {
-			for (int y = 1; y <= felderanzahl; y++) {
+			for (int y = 1; y <= 32; y++) {
 				if (farbeGeben(x, y).equals("rot")) {
 					Geister g = new Geist("Blinky", x, y, Geist.CHASE, this);
 					geister.add(g);
@@ -164,9 +166,24 @@ public class Master extends Kaestchen {
 	}
 
 	private void zeichnePacManundGeister() {
+		
+		for(Knotenpunkt k : knotenpunkte) {
+			if(p.getXpos() == k.x && p.getYpos() == k.y) {
+				k.claimed = true;
+			}
+			bildLoeschen(k.x, k.y);
+			if(k.claimed){
+				System.out.println(k.x + " " + k.y + " claimed");
+			}else {
+				bildSetzen(k.x, k.y, "Pac-man-coin.jpg");
+			}
+		}
+		
+		bildLoeschen(p.getXpos(), p.getYpos());
 		this.farbeSetzen(p.getXpos(), p.getYpos(), "gelb");
-
+		
 		for (Geister g : geister) {
+			bildLoeschen(g.getX(), g.getY());
 			// @TODO andere Gesiter
 			switch(g.getName()) {
 			case "Blinky":
@@ -185,7 +202,6 @@ public class Master extends Kaestchen {
 				this.farbeSetzen(g.getX(), g.getY(), "rot");
 				break;
 			}
-			
 		}
 	}
 
@@ -230,9 +246,25 @@ public class Master extends Kaestchen {
 	}
 
 	public void färben(ArrayList<Knotenpunkt> weg) {
-		for(int i = 0;i<weg.size();i++)
+		for(int i = 0;i<weg.size();i++) {
+			bildLoeschen(weg.get(i).x, weg.get(i).y);
 			farbeSetzen(weg.get(i).x, weg.get(i).y, "orange");
-		
+		}
 	}
+	
+	void scoreBerechnen(){
+		int counter = 0;
+		for(Knotenpunkt k : knotenpunkte) {
+			if(k.claimed) {
+				counter++;
+			}
 
+		}
+		setScore(counter);
+	}
+	
+	void setScore(int score) {
+		textSetzen(2, 12, "Score: " + score);
+	}
+		
 }

@@ -28,6 +28,12 @@ public class GeistSuchtFrau implements Geister {
 	@Override
 	public String findeWeg(int xZiel, int yZiel) {
 		int x,y; kuerzesteLaenge=1000;
+		laengeOben = 0;
+		laengeLinks = 0;
+		laengeRechts = 0;
+		laengeUnten = 0;
+		
+		
 		
 		x=xGeist;y=yGeist-1;
 		if((!(m.farbeGeben(x, y).equals("grün")))&&(!(Richtung.equals("runter")))) {
