@@ -9,13 +9,14 @@ public class Geist implements Geister {
 	private String name;
 	private int x;
 	private int y;
-	String phase = "";
+	String phase = "chase";
 	static String CHASE = "chase";
 	static String FRIGHTENED = "frightened";
 	static String SCATTER = "scatter";
 	static String EATEN = "eaten";
 	Master m;
 	String richtung = null;
+	String altePhase = "chase";
 
 	public Geist(String name, int x, int y, String phase, Master m) {
 		this.name = name;
@@ -78,7 +79,7 @@ public class Geist implements Geister {
 	String findeWegK(int xStart, int yStart, int xZiel, int yZiel, Knotenpunkt anfangsknoten, Knotenpunkt Ziel) {
 //		System.out.println("xZiel: " + xZiel + " yZiel: " + yZiel);
 		warteschlange.clear();
-		warteschlange.addAll(getanknüpfendeknoten(anfangsknoten));
+		warteschlange.addAll(Master.getanknüpfendeknoten(anfangsknoten));
 		int i = 0;
 		while (i < (32 * 28)) {
 //		while(Master.knotenpunkte.get(Master.knotenpunkte.indexOf(Ziel)).weg!=null) {
@@ -87,7 +88,7 @@ public class Geist implements Geister {
 			ArrayList<Knotenpunkt> warteschlange2 = (ArrayList<Knotenpunkt>) warteschlange.clone();
 			warteschlange.clear();
 			for (Knotenpunkt k : warteschlange2) {
-				warteschlange.addAll(getanknüpfendeknoten(k));
+				warteschlange.addAll(Master.getanknüpfendeknoten(k));
 			}
 		}
 		return WegAblaufen(Master.knotenpunkte.get(Master.knotenpunkte.indexOf(Ziel)).weg);
@@ -115,26 +116,41 @@ public class Geist implements Geister {
 		return richtung;
 	}
 
-	private ArrayList<Knotenpunkt> getanknüpfendeknoten(Knotenpunkt anfangsknoten) {
-		// @TODO auf used setzen,distanz setzen
-		ArrayList<Knotenpunkt> anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
-		for (Knotenpunkt k : Master.knotenpunkte) {
-			if (getKnotendelta(k, anfangsknoten) == 1 && !k.used) {
-				k.used = true;
-				@SuppressWarnings("unchecked")
-				ArrayList<Knotenpunkt> kopie = (ArrayList<Knotenpunkt>) anfangsknoten.weg.clone();
-				kopie.add(k);
-				k.setWeg(kopie);
-				anknüpfendeKnoten.add(k);
-			}
-		}
-		return anknüpfendeKnoten;
+	
+
+	@Override
+	public String getPhase() {
+		// TODO Auto-generated method stub
+		return phase;
 	}
 
-	private int getKnotendelta(Knotenpunkt k, Knotenpunkt anfangsknoten) {
-		int deltax = Math.abs(k.x - anfangsknoten.x);
-		int deltay = Math.abs(k.y - anfangsknoten.y);
-//		System.out.println(deltax + deltay);
-		return deltax + deltay;
+	@Override
+	public void setPhase(String phase) {
+		// TODO Auto-generated method stub
+		this.phase = phase;
+	}
+
+	@Override
+	public String getRichtung() {
+		// TODO Auto-generated method stub
+		return richtung;
+	}
+
+	@Override
+	public void setRichtung(String r) {
+		// TODO Auto-generated method stub
+		richtung = r;
+	}
+
+	@Override
+	public String getaltePhase() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setaltePhase(String r) {
+		// TODO Auto-generated method stub
+		
 	}
 }

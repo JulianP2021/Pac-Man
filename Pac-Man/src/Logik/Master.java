@@ -12,8 +12,9 @@ public class Master extends Kaestchen {
 	ArrayList<Geister> geister = new ArrayList<Geister>();
 	boolean verloren = false;
 	int timerAufruf = 0;
-	static String mapfarbe = "schwarz";
-	static String borderfarbe = "blau";
+	static String mapfarbe = "durchsichtig";
+	static String borderfarbe = "grün";
+	String alteTaste = "";
 
 	public static void main(String[] args) {
 		new Master();
@@ -41,9 +42,9 @@ public class Master extends Kaestchen {
 						}
 					}
 				}
-				while(true) {
+				while (true) {
 					while (!verloren) {
-						for(Knotenpunkt k : knotenpunkte) {
+						for (Knotenpunkt k : knotenpunkte) {
 							k.reset();
 						}
 						try {
@@ -57,6 +58,7 @@ public class Master extends Kaestchen {
 								if (keineWand(taste, p.getXpos(), p.getYpos())) {
 									farbeLoeschen(p.getXpos(), p.getYpos());
 									p.setXpos(p.getXpos() - 1);
+									
 								}
 							}
 							if (taste.equals("D")) {
@@ -79,21 +81,63 @@ public class Master extends Kaestchen {
 								}
 							}
 						}
+						
+
 						for (Geister g : geister) {
+							if (!g.getaltePhase().equals(g.getPhase())) {
+								System.out.println("=" + g.getPhase());
+								g.setaltePhase(g.getPhase());
+								switch (g.getRichtung()) {
+								case "hoch":
+									g.setRichtung("runter");
+									break;
+								case "rechts":
+									g.setRichtung("links");
+									break;
+								case "links":
+									g.setRichtung("rechts");
+									break;
+								case "runter":
+									g.setRichtung("hoch");
+									break;
+								}
+							} else {
+								String r = null;
+								if (g.getPhase().equals("scatter")) {
+									if (geister.indexOf(g) == 0) {
+										r = g.findeWeg(3, 1);
+									} else if (geister.indexOf(g) == 1) {
+										r = g.findeWeg(27, 1);
+									} else if (geister.indexOf(g) == 2) {
+										r = g.findeWeg(1, 30);
+									} else if (geister.indexOf(g) == 3) {
+										r = g.findeWeg(29, 30);
+									}
+								} else if (g.getPhase().equals("chase")) {
+									r = g.findeWeg(p.getXpos(), p.getYpos());
+								} else if (g.getPhase().equals("frightend")) {
+									for (Knotenpunkt k : knotenpunkte) {
+
+									}
+								} else if (g.getPhase().equals("eaten")) {
+
+								}
+								System.out.println("");
 //							System.out.println(g.findeWeg(p.getXpos(), p.getYpos()) + " " + g.getName());
-							switch(g.findeWeg(p.getXpos(), p.getYpos())) {
-							case "hoch":
-								g.setY(g.getY()-1);
-								break;
-							case "rechts":
-								g.setX(g.getX()+1);
-								break;
-							case "links":
-								g.setX(g.getX()-1);
-								break;
-							case "runter":
-								g.setY(g.getY()+1);
-								break;	
+								switch (r) {
+								case "hoch":
+									g.setY(g.getY() - 1);
+									break;
+								case "rechts":
+									g.setX(g.getX() + 1);
+									break;
+								case "links":
+									g.setX(g.getX() - 1);
+									break;
+								case "runter":
+									g.setY(g.getY() + 1);
+									break;
+								}
 							}
 						}
 						überprüfeSieg();
@@ -104,32 +148,35 @@ public class Master extends Kaestchen {
 					}
 				}
 			}
+
 		});
 		t.start();
 	}
-	
-	
-	void updateTimer(){
+
+	void updateTimer() {
 		timerAufruf++;
 		textSetzen(2, 13, "Zeit " + timerAufruf);
 	}
-	
+
 	void reset() {
 		p = null;
 		geister = new ArrayList<Geister>();
-		p = new PacMan(8,26, 3, false);
+		p = new PacMan(8, 26, 3, false);
 		ladeMatrix("Map");
-		farbeSetzen(2, 2, "rot");
-		farbeSetzen(28, 2, "rot");
+//		farbeSetzen(2, 2, "rot");
+//		farbeSetzen(28, 2, "rot");
 		farbeSetzen(2, 29, "pink");
-		farbeSetzen(28, 29, "pink");
+		farbeSetzen(28, 2, "pink");
+//		farbeSetzen(2, 29, "pink");
+//		farbeSetzen(2, 29, "pink");
+//		farbeSetzen(28, 29, "pink");
 //		farbeSetzen(2, 2, "pink");
 		createGeister();
 	}
-	
+
 	public void clearmap() {
-		for(int i = 1;i<32;i++) {
-			for(int j = 1;j<felderanzahl + 3;j++) {
+		for (int i = 1; i < 32; i++) {
+			for (int j = 1; j < felderanzahl + 3; j++) {
 				this.farbeLoeschen(i, j);
 			}
 		}
@@ -137,8 +184,8 @@ public class Master extends Kaestchen {
 	}
 
 	protected void überprüfeSieg() {
-		for(Geister g : geister) {
-			if(g.getX() == p.getXpos() && g.getY() == p.getYpos()) {
+		for (Geister g : geister) {
+			if (g.getX() == p.getXpos() && g.getY() == p.getYpos()) {
 				verloren = true;
 			}
 		}
@@ -153,7 +200,7 @@ public class Master extends Kaestchen {
 					System.out.println("Geist created bei " + x + " " + y);
 				}
 				if (farbeGeben(x, y).equals("pink")) {
-					Geister g = new GeistSuchtFrau("Pinky", x, y, "", this);
+					Geister g = new GeistSuchtFrau("Pinky", x, y, Geist.CHASE, this);
 					geister.add(g);
 				}
 //				if (farbeGeben(x, y).equals("blau")) {
@@ -171,26 +218,26 @@ public class Master extends Kaestchen {
 	}
 
 	private void zeichnePacManundGeister() {
-		
-		for(Knotenpunkt k : knotenpunkte) {
-			if(p.getXpos() == k.x && p.getYpos() == k.y) {
+
+		for (Knotenpunkt k : knotenpunkte) {
+			if (p.getXpos() == k.x && p.getYpos() == k.y) {
 				k.claimed = true;
 			}
 			bildLoeschen(k.x, k.y);
-			if(k.claimed){
-				System.out.println(k.x + " " + k.y + " claimed");
-			}else {
-				bildSetzen(k.x, k.y, "Pac-man-coin.jpg");
+			if (k.claimed) {
+//				System.out.println(k.x + " " + k.y + " claimed");
+			} else {
+//				bildSetzen(k.x, k.y, "Pac-man-coin.jpg");
 			}
 		}
-		
-		bildLoeschen(p.getXpos(), p.getYpos());
+
+//		bildSetzen(p.getXpos(), p.getYpos(), "PAcman.gif");
 		this.farbeSetzen(p.getXpos(), p.getYpos(), "gelb");
-		
+
 		for (Geister g : geister) {
 			bildLoeschen(g.getX(), g.getY());
 			// @TODO andere Gesiter
-			switch(g.getName()) {
+			switch (g.getName()) {
 			case "Blinky":
 				this.farbeSetzen(g.getX(), g.getY(), "rot");
 				break;
@@ -203,7 +250,7 @@ public class Master extends Kaestchen {
 			case "Clyde":
 				this.farbeSetzen(g.getX(), g.getY(), "orange");
 				break;
-			default: 
+			default:
 				this.farbeSetzen(g.getX(), g.getY(), "rot");
 				break;
 			}
@@ -230,45 +277,73 @@ public class Master extends Kaestchen {
 	@Override
 	public void tasteClick(String taste) {
 		this.taste = taste;
+		if (taste.equals("T")) {
+			for (Geister g : geister) {
+				g.setPhase("scatter");
+			}
+		}
 		System.out.println(taste);
 	}
 
 	@Override
 	public void tasteClickCtrl(String taste) {
-		//speichereMatrix("Map", "blau");
+		// speichereMatrix("Map", "blau");
 	}
 
 	@Override
 	public void mausLeftClick(int x, int y) {
-		//farbeSetzen(x, y, "blau");
+		// farbeSetzen(x, y, "blau");
 
 	}
 
 	@Override
 	public void mausRightClick(int x, int y) {
-		//farbeSetzen(x, y, "scharz");
+		// farbeSetzen(x, y, "scharz");
 	}
 
 	public void färben(ArrayList<Knotenpunkt> weg) {
-		for(int i = 0;i<weg.size();i++) {
+		for (int i = 0; i < weg.size(); i++) {
 			bildLoeschen(weg.get(i).x, weg.get(i).y);
 			farbeSetzen(weg.get(i).x, weg.get(i).y, "orange");
 		}
 	}
-	
-	void scoreBerechnen(){
+
+	void scoreBerechnen() {
 		int counter = 0;
-		for(Knotenpunkt k : knotenpunkte) {
-			if(k.claimed) {
+		for (Knotenpunkt k : knotenpunkte) {
+			if (k.claimed) {
 				counter++;
 			}
 
 		}
 		setScore(counter);
 	}
-	
+
 	void setScore(int score) {
 		textSetzen(2, 12, "Score: " + score);
 	}
-		
+
+	static int getKnotendelta(Knotenpunkt k, Knotenpunkt anfangsknoten) {
+		int deltax = Math.abs(k.x - anfangsknoten.x);
+		int deltay = Math.abs(k.y - anfangsknoten.y);
+//		System.out.println(deltax + deltay);
+		return deltax + deltay;
+	}
+
+	static public ArrayList<Knotenpunkt> getanknüpfendeknoten(Knotenpunkt anfangsknoten) {
+		// @TODO auf used setzen,distanz setzen
+		ArrayList<Knotenpunkt> anknüpfendeKnoten = new ArrayList<Knotenpunkt>();
+		for (Knotenpunkt k : Master.knotenpunkte) {
+			if (Master.getKnotendelta(k, anfangsknoten) == 1 && !k.used) {
+				k.used = true;
+				@SuppressWarnings("unchecked")
+				ArrayList<Knotenpunkt> kopie = (ArrayList<Knotenpunkt>) anfangsknoten.weg.clone();
+				kopie.add(k);
+				k.setWeg(kopie);
+				anknüpfendeKnoten.add(k);
+			}
+		}
+		return anknüpfendeKnoten;
+	}
+
 }

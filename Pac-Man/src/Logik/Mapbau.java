@@ -12,9 +12,9 @@ public class Mapbau extends Kaestchen{
 		ladeMatrix("Map");
 		for(int i = 0;i<=29;i++) {
 			for(int j = 0;j<=32;j++) {
-				if(farbeGeben(i, j).equals("blau"));
-				else {
-					farbeSetzen(i, j, "schwarz");
+				if(farbeGeben(i, j).equals("blau")) {
+				
+					farbeSetzen(i, j, "grün");
 				}
 			}
 		}
