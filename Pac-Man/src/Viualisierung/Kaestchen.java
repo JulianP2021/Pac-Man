@@ -22,6 +22,8 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -49,8 +51,8 @@ public abstract class Kaestchen extends JFrame {
 	private int spielfeldbreite;
 	private Color[][] matrix;
 	private String[][] text;
-	private Image[][] bild;
-	private Hashtable<String, Image> bilder = new Hashtable<String, Image>();
+	private ImageErweiterung[][] bild;
+	private Hashtable<String, ImageErweiterung> bilder = new Hashtable<String, ImageErweiterung>();
 	private Thread[] ticker = new Thread[100];
 	private double[] stepDauer = new double[100];
 	private Color farbeDurchsichtig = new Color(0, 0, 0, 0);
@@ -119,7 +121,7 @@ public abstract class Kaestchen extends JFrame {
 			}
 		}
 		text = new String[kaestchenAnzX][kaestchenAnzY];
-		bild = new Image[kaestchenAnzX][kaestchenAnzY];
+		bild = new ImageErweiterung[kaestchenAnzX][kaestchenAnzY];
 		this.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent evt) {
 				String taste = KeyEvent.getKeyText(evt.getKeyCode());
@@ -144,8 +146,8 @@ public abstract class Kaestchen extends JFrame {
 				}
 				for (int x = 0; x < kaestchenAnzX; x++) {
 					for (int y = 0; y < kaestchenAnzY; y++) {
-						if (bild[x][y] != null)
-							continue;
+//						if (bild[x][y] != null)
+//							continue;
 						temp.setColor(matrix[x][y]);
 						temp.fillRect(randX + x * kaestchenBreite + nichtfuellbreite, randY + y * kaestchenHoehe + nichtfuellbreite,
 								kaestchenBreite - nichtfuellbreite, kaestchenHoehe - nichtfuellbreite);
@@ -161,7 +163,15 @@ public abstract class Kaestchen extends JFrame {
 									(int) (randY + (y + 0.5) * kaestchenHoehe + 0.5 * hoehe));
 						}
 						if (bild[x][y] != null) {
-							temp.drawImage(bild[x][y], randX + x * kaestchenBreite, randY + y * kaestchenHoehe, kaestchenBreite, kaestchenHoehe, null);
+							BufferedImage buff1 = new BufferedImage(kaestchenBreite, kaestchenHoehe, BufferedImage.TYPE_INT_ARGB);
+							Graphics2D temp1 = buff1.createGraphics();
+//							temp.fillRect(randX + x * kaestchenBreite + nichtfuellbreite, randY + y * kaestchenHoehe + nichtfuellbreite,
+//									kaestchenBreite - nichtfuellbreite, kaestchenHoehe - nichtfuellbreite);
+							
+							temp1.rotate(bild[x][y].getAusrichtung(), kaestchenBreite*0.5, kaestchenHoehe*0.5);
+							temp1.drawImage(bild[x][y].getImg(),0,0, kaestchenBreite, kaestchenHoehe, null);
+//							temp1.rotate(360-bild[x][y].getAusrichtung(), kaestchenBreite*0.5, kaestchenHoehe*0.5);
+							temp.drawImage(buff1, randX + x * kaestchenBreite, randY + y * kaestchenHoehe, buff1.getWidth(), buff1.getHeight(), null);
 						}
 					}
 				}
@@ -399,20 +409,22 @@ public abstract class Kaestchen extends JFrame {
 	 *            - von 1 bis Kästchenanzahl
 	 * @param s
 	 *            - dateiname
+	 * @param a
+	 *            - Ausrichtung in Grad
 	 */
-	public void bildSetzen(int x, int y, String s) {
+	public void bildSetzen(int x, int y, String s, double a) {
 		if ((x < 1 || x > kaestchenAnzX) || (y < 1 || y > kaestchenAnzY)) {
 			meldungSystem("bildSetzen(...) wurde außerhalb des Feldes aufgerufen!");
 			return;
 		}
-		if (bilder.containsKey(s))
+		if (bilder.containsKey(s + a))
 			bild[x - 1][y - 1] = bilder.get(s);
 		else
 			try {
-				Image b = ImageIO.read(new File(s));
+				ImageErweiterung b = new ImageErweiterung(new ImageIcon(s).getImage(),a);
 				bild[x - 1][y - 1] = b;
 				bilder.put(s, b);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				meldung("Bildname unbekannt: " + s);
 				System.exit(0);
 			}
@@ -456,17 +468,26 @@ public abstract class Kaestchen extends JFrame {
 	 * @param filename
 	 *            - Dateiname einer .wav-Datei
 	 */
-	public void sound(String filename) {
+	public void sound(String filename, float volume) {
 		Clip clip;
 		try {
 			clip = AudioSystem.getClip();
 			AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(filename));
 			clip.open(inputStream);
 			clip.start();
+			setVolume(clip, volume);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	public void setVolume(Clip clip,float volume) {
+		if (volume < 0f || volume > 1f)
+			throw new IllegalArgumentException("Volume not valid: " + volume);
+		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		gainControl.setValue(20f * (float) Math.log10(volume));
+	}
+	
 
 	/**
 	 * @param nr

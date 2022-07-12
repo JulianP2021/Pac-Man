@@ -5,24 +5,18 @@ public class GeistSuchtFrau implements Geister {
 	private String nameGeist;
 	private int xGeist;
 	private int yGeist;
-	String phase = "chase";
-	static String CHASE = "chase";
-	static String FRIGHTENED = "frightened";
-	static String SCATTER = "scatter";
-	static String EATEN = "eaten";
-
 	int abstandX;
 	int abstandY;
-	int laengeOben, laengeUnten, laengeRechts, laengeLinks, kuerzesteLaenge;
+	public int laengeOben, laengeUnten, laengeRechts, laengeLinks, kuerzesteLaenge;
 	public String Richtung = "O";
 	Master m;
-	String altePhase = "chase";
+	int eatenCounter=0;
+	boolean eatenZustand = false;
 
 	public GeistSuchtFrau(String name, int x, int y, String phase, Master m) {
 		this.xGeist = x;
 		this.yGeist = y;
 		this.nameGeist = name;
-		this.phase = phase;
 		this.m = m;
 	}
 
@@ -34,7 +28,6 @@ public class GeistSuchtFrau implements Geister {
 		laengeLinks = 10000;
 		laengeRechts = 10000;
 		laengeUnten = 10000;
-		System.out.println(Richtung);
 		x = xGeist;
 		y = yGeist - 1;
 		if ((!(m.farbeGeben(x, y).equals(Master.borderfarbe))) && (!(Richtung.equals("runter")))) {
@@ -123,18 +116,6 @@ public class GeistSuchtFrau implements Geister {
 	}
 
 	@Override
-	public String getPhase() {
-		// TODO Auto-generated method stub
-		return phase;
-	}
-
-	@Override
-	public void setPhase(String phase) {
-		// TODO Auto-generated method stub
-		this.phase = phase;
-	}
-
-	@Override
 	public String getRichtung() {
 		// TODO Auto-generated method stub
 		return Richtung;
@@ -147,14 +128,33 @@ public class GeistSuchtFrau implements Geister {
 	}
 
 	@Override
-	public String getaltePhase() {
+	public int getKuerzesteLaenge() {
 		// TODO Auto-generated method stub
-		return altePhase;
+		return kuerzesteLaenge;
 	}
 
 	@Override
-	public void setaltePhase(String r) {
+	public int getCountEATEN() {
 		// TODO Auto-generated method stub
-		altePhase = r;
+		return eatenCounter;
 	}
+
+	@Override
+	public void setCountEATEN(int eatenCounter) {
+		// TODO Auto-generated method stub
+		this.eatenCounter = eatenCounter;
+	}
+
+	@Override
+	public boolean getEatenZustand() {
+		// TODO Auto-generated method stub
+		return eatenZustand;
+	}
+
+	@Override
+	public void setEatenZustand(boolean eaten) {
+		// TODO Auto-generated method stub
+		this.eatenZustand = eaten;
+	}
+
 }

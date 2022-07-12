@@ -3,13 +3,12 @@ package Logik;
 public class PacMan {
 	private int xpos;
 	private int ypos;
-	private int leben;
+	boolean lebendig = true;
 	private boolean chase = false;
 	
-	public PacMan(int xpos, int ypos, int leben, boolean chase) {
+	public PacMan(int xpos, int ypos, boolean chase) {
 		this.xpos = xpos;
 		this.ypos = ypos;
-		this.leben = leben;
 		this.chase = chase;
 		System.out.println(xpos+" "+ ypos);
 	}
@@ -25,11 +24,11 @@ public class PacMan {
 	public void setYpos(int ypos) {
 		this.ypos = ypos;
 	}
-	public int getLeben() {
-		return leben;
+	public boolean getLeben() {
+		return lebendig;
 	}
-	public void setLeben(int leben) {
-		this.leben = leben;
+	public void setLeben(boolean lebendig) {
+		this.lebendig = lebendig;
 	}
 	public boolean isChase() {
 		return chase;

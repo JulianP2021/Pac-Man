@@ -12,9 +12,9 @@ public class Mapbau extends Kaestchen{
 		ladeMatrix("Map");
 		for(int i = 0;i<=29;i++) {
 			for(int j = 0;j<=32;j++) {
-				if(farbeGeben(i, j).equals("blau")) {
+				if(farbeGeben(i, j).equals("durchsichtig")) {
 				
-					farbeSetzen(i, j, "grün");
+					farbeSetzen(i, j, "schwarz");
 				}
 			}
 		}
@@ -23,13 +23,13 @@ public class Mapbau extends Kaestchen{
 
 	@Override
 	public void mausLeftClick(int x, int y) {
-		speichereMatrix("Map");
+		farbeSetzen(x, y, "blau");
 		
 	}
 
 	@Override
 	public void tasteClick(String taste) {
 		// TODO Auto-generated method stub
-		
+		speichereMatrix("Map");
 	}
 }

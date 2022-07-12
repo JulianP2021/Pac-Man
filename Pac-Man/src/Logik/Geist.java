@@ -112,23 +112,13 @@ public class Geist implements Geister {
 				richtung = "hoch";
 			}
 		}
-//		this.m.färben(weg);
+		this.m.färben(weg);
 		return richtung;
 	}
 
 	
 
-	@Override
-	public String getPhase() {
-		// TODO Auto-generated method stub
-		return phase;
-	}
-
-	@Override
-	public void setPhase(String phase) {
-		// TODO Auto-generated method stub
-		this.phase = phase;
-	}
+	
 
 	@Override
 	public String getRichtung() {
@@ -142,14 +132,35 @@ public class Geist implements Geister {
 		richtung = r;
 	}
 
+	
 	@Override
-	public String getaltePhase() {
+	public int getKuerzesteLaenge() {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
+	}
+
+	
+	@Override
+	public int getCountEATEN() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	
+	@Override
+	public void setCountEATEN(int eatenCounter) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void setaltePhase(String r) {
+	public boolean getEatenZustand() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setEatenZustand(boolean eaten) {
 		// TODO Auto-generated method stub
 		
 	}
