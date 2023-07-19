@@ -22,6 +22,7 @@ public class Knotenpunkt {
 			distanz = weg.size();
 		}
 		this.weg = weg;
+		used = true;
 	}
 
 	public void reset() {
