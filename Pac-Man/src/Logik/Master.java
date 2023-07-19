@@ -2,6 +2,7 @@ package Logik;
 
 import java.util.ArrayList;
 
+import Viualisierung.EndScreen;
 import Viualisierung.Kaestchen;
 
 public class Master extends Kaestchen {
@@ -25,6 +26,9 @@ public class Master extends Kaestchen {
 	static String FRIGHTENED = "frightened";
 	static String SCATTER = "scatter";
 	String altePhase = phase;
+	private boolean shown = false;
+	int wartenfürpowerUP = 0;
+
 
 	public static void main(String[] args) {
 		new Master();
@@ -32,6 +36,7 @@ public class Master extends Kaestchen {
 
 	public Master() {
 		super(31, 31, felderanzahl, 32);
+		knotenpunkte = new ArrayList<Knotenpunkt>();
 //		for (int i = 1; i <= felderanzahl; i++) {
 //			for (int j = 1; j < 32; j++) {
 //				farbeSetzen(i, j, mapfarbe);
@@ -55,427 +60,463 @@ public class Master extends Kaestchen {
 
 		Thread t = new Thread(new Runnable() {
 
+			
 			@Override
 			public void run() {
-				int c = 0;
-				reset();
-				zeichnePacManundGeister();
-				for (int i = 1; i <= felderanzahl; i++) {
-					for (int j = 1; j < 32; j++) {
-						if (!farbeGeben(i, j).equals(borderfarbe)) {
-							if(!((i>=13 && i<=17) && (j>=15 && j<=17))) {
-								Knotenpunkt k = new Knotenpunkt(i, j);
-								System.out.println("Knotenpunkt created : " + k.x + " " + k.y);
-								knotenpunkte.add(k);
-							}
-						}
-					}
-				}
-				while (!gewonnen && !verloren) {
-
+				while(true) {
 					try {
-						Thread.sleep(40);
+						Thread.sleep(10);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					c++;
-					if (c % 8 == 0) {
-						if (!food) {
-							createPowerUp();
-						}
-
-						algorythmusvorbereitenundPower_UPerfassen();
-
-						if (taste != null) {
-							if (taste.equals("A")) {
-								if (keineWand(taste, p.getXpos(), p.getYpos())) {
-									alteTaste = "A";
-								}
-							}
-							if (taste.equals("D")) {
-								if (keineWand(taste, p.getXpos(), p.getYpos())) {
-									alteTaste = "D";
-								}
-							}
-							if (taste.equals("W")) {
-								if (keineWand(taste, p.getXpos(), p.getYpos())) {
-									alteTaste = "W";
-								}
-							}
-							if (taste.equals("S")) {
-								if (keineWand(taste, p.getXpos(), p.getYpos())) {
-									alteTaste = "S";
-								}
-							}
-						}
-						if (alteTaste != null) {
-							if (alteTaste.equals("A")) {
-								if (p.getXpos() == 1 && p.getYpos() == 16) {
-									p.setXpos(30);
-								}
-								if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
-									farbeLoeschen(p.getXpos(), p.getYpos());
-									p.setXpos(p.getXpos() - 1);
-								}
-							}
-							if (alteTaste.equals("D")) {
-								if (p.getXpos() == 29 && p.getYpos() == 16) {
-									p.setXpos(0);
-								}
-								if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
-									farbeLoeschen(p.getXpos(), p.getYpos());
-									p.setXpos(p.getXpos() + 1);
-								}
-							}
-							if (alteTaste.equals("W")) {
-								if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
-									farbeLoeschen(p.getXpos(), p.getYpos());
-									p.setYpos(p.getYpos() - 1);
-								}
-							}
-							if (alteTaste.equals("S")) {
-								if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
-									farbeLoeschen(p.getXpos(), p.getYpos());
-									p.setYpos(p.getYpos() + 1);
-								}
-							}
-						}
-						überprüfeSieg();
-						überprüfePowerUp();
-						clearmap();
+					if(shown) {
+						
+					}else {
+						int c = 0;
+						reset();
 						zeichnePacManundGeister();
-						updateTimer();
-						scoreBerechnen();
-					}
-					if (c % 10 == 0) {
-						for (Geister g : geister) {
-							System.out.println(phase);
+						createknotenpunkt();
+						while (!gewonnen && !verloren) {
 
-							// 180° TURN BEI PHASENWECHSEL:
-							if (!altePhase.equals(phase)) {
-								altePhase = phase;
-								switch (g.getRichtung()) {
-								case "hoch":
-									g.setRichtung("runter");
-									break;
-								case "rechts":
-									g.setRichtung("links");
-									break;
-								case "links":
-									g.setRichtung("rechts");
-									break;
-								case "runter":
-									g.setRichtung("hoch");
-									break;
+							try {
+								Thread.sleep(40);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							wartenfürpowerUP++;
+							c++;
+							if (c % 8 == 0) {
+								if (!food) {
+									createPowerUp();
 								}
 
-							} else {
+								algorythmusvorbereitenundPower_UPerfassen();
 
-//Phase: Eaten							
-								if (g.getEatenZustand() == true) {
-									g.setRichtung("");
-									switch (g.getName()) {
-									case "Blinky":
-										g.setX(14);
-										g.setY(15);
-										break;
-									case "Pinky":
-										g.setX(14);
-										g.setY(17);
-										break;
-									case "Inky":
-										g.setX(16);
-										g.setY(15);
-										break;
-									case "Clyde":
-										g.setX(16);
-										g.setY(17);
-										break;
+								if (taste != null) {
+									if (taste.equals("A")) {
+										if (keineWand(taste, p.getXpos(), p.getYpos())) {
+											alteTaste = "A";
+										}
 									}
-									g.setCountEATEN(g.getCountEATEN() + 1);
-									if (g.getCountEATEN() > 15) {
-										g.setCountEATEN(0);
-										g.setEatenZustand(false);
-										g.setX(tpXgeist());
-										g.setY(tpYgeist());
+									if (taste.equals("D")) {
+										if (keineWand(taste, p.getXpos(), p.getYpos())) {
+											alteTaste = "D";
+										}
 									}
-//Phase: Frightened								
-								} else if (phase.equals(FRIGHTENED)) {
+									if (taste.equals("W")) {
+										if (keineWand(taste, p.getXpos(), p.getYpos())) {
+											alteTaste = "W";
+										}
+									}
+									if (taste.equals("S")) {
+										if (keineWand(taste, p.getXpos(), p.getYpos())) {
+											alteTaste = "S";
+										}
+									}
+								}
+								if (alteTaste != null) {
+									if (alteTaste.equals("A")) {
+										if (p.getXpos() == 1 && p.getYpos() == 16) {
+											p.setXpos(30);
+										}
+										if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
+											farbeLoeschen(p.getXpos(), p.getYpos());
+											p.setXpos(p.getXpos() - 1);
+										}
+									}
+									if (alteTaste.equals("D")) {
+										if (p.getXpos() == 29 && p.getYpos() == 16) {
+											p.setXpos(0);
+										}
+										if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
+											farbeLoeschen(p.getXpos(), p.getYpos());
+											p.setXpos(p.getXpos() + 1);
+										}
+									}
+									if (alteTaste.equals("W")) {
+										if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
+											farbeLoeschen(p.getXpos(), p.getYpos());
+											p.setYpos(p.getYpos() - 1);
+										}
+									}
+									if (alteTaste.equals("S")) {
+										if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
+											farbeLoeschen(p.getXpos(), p.getYpos());
+											p.setYpos(p.getYpos() + 1);
+										}
+									}
+								}
+								überprüfeSieg();
+								überprüfePowerUp();
+								clearmap();
+								zeichnePacManundGeister();
+								updateTimer();
+								scoreBerechnen();
+							}
+							if (c % 10 == 0) {
+								for (Geister g : geister) {
+									System.out.println(phase);
 
-									boolean passt = false;
-									while (passt == false) {
+									// 180° TURN BEI PHASENWECHSEL:
+									if (!altePhase.equals(phase)) {
+										altePhase = phase;
+										switch (g.getRichtung()) {
+										case "hoch":
+											g.setRichtung("runter");
+											break;
+										case "rechts":
+											g.setRichtung("links");
+											break;
+										case "links":
+											g.setRichtung("rechts");
+											break;
+										case "runter":
+											g.setRichtung("hoch");
+											break;
+										}
 
-										int zufall = (int) (Math.random() * 4);
-										switch (zufall) {
-										case 0:
-											if (((!(farbeGeben(g.getX(), g.getY() - 1).equals(Master.borderfarbe)))
-													&& (!(g.getRichtung().equals("runter"))))) {
-												g.setRichtung("hoch");
-												passt = true;
+									} else {
+
+		//Phase: Eaten							
+										if (g.getEatenZustand() == true) {
+											g.setRichtung("");
+											switch (g.getName()) {
+											case "Blinky":
+												g.setX(14);
+												g.setY(15);
+												break;
+											case "Pinky":
+												g.setX(14);
+												g.setY(17);
+												break;
+											case "Inky":
+												g.setX(16);
+												g.setY(15);
+												break;
+											case "Clyde":
+												g.setX(16);
+												g.setY(17);
+												break;
 											}
+											g.setCountEATEN(g.getCountEATEN() + 1);
+											if (g.getCountEATEN() > 15) {
+												g.setCountEATEN(0);
+												g.setEatenZustand(false);
+												g.setX(tpXgeist());
+												g.setY(tpYgeist());
+											}
+		//Phase: Frightened								
+										} else if (phase.equals(FRIGHTENED)) {
+
+											boolean passt = false;
+											while (passt == false) {
+
+												int zufall = (int) (Math.random() * 4);
+												switch (zufall) {
+												case 0:
+													if (((!(farbeGeben(g.getX(), g.getY() - 1).equals(Master.borderfarbe)))
+															&& (!(g.getRichtung().equals("runter"))))) {
+														g.setRichtung("hoch");
+														passt = true;
+													}
+													break;
+												case 1:
+													if ((!(farbeGeben(g.getX(), g.getY() + 1).equals(Master.borderfarbe)))
+															&& (!(g.getRichtung().equals("hoch")))) {
+														g.setRichtung("runter");
+														passt = true;
+													}
+													break;
+												case 2:
+													if ((!(farbeGeben(g.getX() + 1, g.getY()).equals(Master.borderfarbe)))
+															&& (!(g.getRichtung().equals("links")))) {
+														g.setRichtung("rechts");
+														passt = true;
+													}
+													break;
+												case 3:
+													if ((!(farbeGeben(g.getX() - 1, g.getY()).equals(Master.borderfarbe)))
+															&& (!(g.getRichtung().equals("rechts")))) {
+														g.setRichtung("links");
+														passt = true;
+													}
+													break;
+												default:
+													break;
+												}
+											}
+											frightenedCounter++;
+											if (frightenedCounter > 80) {
+												frightenedCounter = 0;
+												phase = "";
+											}
+
+		//Phase: Chase								
+										} else if (chaseScatterCounter < 150) {
+											phase = CHASE;
+											chaseScatterCounter++;
+
+											if (g.getName().equals("Blinky")) {
+												chaseScatterCounter++;
+												g.findeWeg(p.getXpos(), p.getYpos());
+
+											} else if (g.getName().equals("Pinky")) {
+												int addX = 0, addY = 0;
+												switch (alteTaste) {
+												case "W":
+													addY = -4;
+													break;
+												case "A":
+													addX = -4;
+													break;
+												case "S":
+													addY = 4;
+													break;
+												case "D":
+													addX = 4;
+													break;
+												default:
+													break;
+												}
+												g.findeWeg(p.getXpos() + addX, p.getYpos() + addY);
+
+											} else if (g.getName().equals("Inky")) {
+												int addX = 0, addY = 0, vektorX = 0, vektorY = 0, zielX = 0, zielY = 0;
+												switch (alteTaste) {
+												case "W":
+													addY = -2;
+													break;
+												case "A":
+													addX = -2;
+													break;
+												case "S":
+													addY = 2;
+													break;
+												case "D":
+													addX = 2;
+													break;
+												default:
+													break;
+												}
+												vektorX = (p.getXpos() + addX) - geister.get(0).getX();
+												vektorY = (p.getYpos() + addY) - geister.get(0).getY();
+												zielX = (p.getXpos() + addX) + vektorX;
+												zielY = (p.getYpos() + addY) + vektorY;
+												g.findeWeg(zielX, zielY);
+
+											} else if (g.getName().equals("Clyde")) {
+												g.findeWeg(p.getXpos(), p.getYpos());
+												if (g.getKuerzesteLaenge() < 8) {
+													g.findeWeg(29, 30);
+												}
+											}
+
+		//Phase: Scatter								
+										} else {
+											phase = SCATTER;
+											chaseScatterCounter++;
+											if (chaseScatterCounter > 220) {
+												chaseScatterCounter = 0;
+											}
+
+											if (g.getName().equals("Blinky")) {
+												chaseScatterCounter++;
+												g.findeWeg(3, 1);
+											} else if (g.getName().equals("Pinky")) {
+												g.findeWeg(1, 30);
+											} else if (g.getName().equals("Inky")) {
+												g.findeWeg(27, 1);
+											} else if (g.getName().equals("Clyde")) {
+												g.findeWeg(29, 30);
+											}
+
+										}
+		//Bewegung:	
+										switch (g.getRichtung()) {
+										case "hoch":
+											g.setY(g.getY() - 1);
 											break;
-										case 1:
-											if ((!(farbeGeben(g.getX(), g.getY() + 1).equals(Master.borderfarbe)))
-													&& (!(g.getRichtung().equals("hoch")))) {
-												g.setRichtung("runter");
-												passt = true;
+										case "rechts":
+											if (g.getX() == 29 && g.getY() == 16) {
+												g.setX(0);
 											}
+											g.setX(g.getX() + 1);
 											break;
-										case 2:
-											if ((!(farbeGeben(g.getX() + 1, g.getY()).equals(Master.borderfarbe)))
-													&& (!(g.getRichtung().equals("links")))) {
-												g.setRichtung("rechts");
-												passt = true;
+										case "links":
+											if (g.getX() == 1 && g.getY() == 16) {
+												g.setX(30);
 											}
+											g.setX(g.getX() - 1);
 											break;
-										case 3:
-											if ((!(farbeGeben(g.getX() - 1, g.getY()).equals(Master.borderfarbe)))
-													&& (!(g.getRichtung().equals("rechts")))) {
-												g.setRichtung("links");
-												passt = true;
-											}
+										case "runter":
+											g.setY(g.getY() + 1);
 											break;
 										default:
 											break;
 										}
-									}
-									frightenedCounter++;
-									if (frightenedCounter > 80) {
-										frightenedCounter = 0;
-										phase = "";
-									}
 
-//Phase: Chase								
-								} else if (chaseScatterCounter < 150) {
-									phase = CHASE;
-									chaseScatterCounter++;
-
-									if (g.getName().equals("Blinky")) {
-										chaseScatterCounter++;
-										g.findeWeg(p.getXpos(), p.getYpos());
-
-									} else if (g.getName().equals("Pinky")) {
-										int addX = 0, addY = 0;
-										switch (alteTaste) {
-										case "W":
-											addY = -4;
-											break;
-										case "A":
-											addX = -4;
-											break;
-										case "S":
-											addY = 4;
-											break;
-										case "D":
-											addX = 4;
-											break;
-										default:
-											break;
-										}
-										g.findeWeg(p.getXpos() + addX, p.getYpos() + addY);
-
-									} else if (g.getName().equals("Inky")) {
-										int addX = 0, addY = 0, vektorX = 0, vektorY = 0, zielX = 0, zielY = 0;
-										switch (alteTaste) {
-										case "W":
-											addY = -2;
-											break;
-										case "A":
-											addX = -2;
-											break;
-										case "S":
-											addY = 2;
-											break;
-										case "D":
-											addX = 2;
-											break;
-										default:
-											break;
-										}
-										vektorX = (p.getXpos() + addX) - geister.get(0).getX();
-										vektorY = (p.getYpos() + addY) - geister.get(0).getY();
-										zielX = (p.getXpos() + addX) + vektorX;
-										zielY = (p.getYpos() + addY) + vektorY;
-										g.findeWeg(zielX, zielY);
-
-									} else if (g.getName().equals("Clyde")) {
-										g.findeWeg(p.getXpos(), p.getYpos());
-										if (g.getKuerzesteLaenge() < 8) {
-											g.findeWeg(29, 30);
-										}
-									}
-
-//Phase: Scatter								
-								} else {
-									phase = SCATTER;
-									chaseScatterCounter++;
-									if (chaseScatterCounter > 220) {
-										chaseScatterCounter = 0;
-									}
-
-									if (g.getName().equals("Blinky")) {
-										chaseScatterCounter++;
-										g.findeWeg(3, 1);
-									} else if (g.getName().equals("Pinky")) {
-										g.findeWeg(1, 30);
-									} else if (g.getName().equals("Inky")) {
-										g.findeWeg(27, 1);
-									} else if (g.getName().equals("Clyde")) {
-										g.findeWeg(29, 30);
 									}
 
 								}
-//Bewegung:	
-								System.out.println("");
-								switch (g.getRichtung()) {
-								case "hoch":
-									g.setY(g.getY() - 1);
-									break;
-								case "rechts":
-									if (g.getX() == 29 && g.getY() == 16) {
-										g.setX(0);
-									}
-									g.setX(g.getX() + 1);
-									break;
-								case "links":
-									if (g.getX() == 1 && g.getY() == 16) {
-										g.setX(30);
-									}
-									g.setX(g.getX() - 1);
-									break;
-								case "runter":
-									g.setY(g.getY() + 1);
-									break;
-								default:
-									break;
-								}
-
+								überprüfeSieg();
+								überprüfePowerUp();
+								clearmap();
+								zeichnePacManundGeister();
+								updateTimer();
+								scoreBerechnen();
 							}
 
 						}
-						überprüfeSieg();
-						überprüfePowerUp();
-						clearmap();
+						System.out.println("Ok");
+						gewonnen = false;
+						if(!gewonnen && !verloren) {
+							resetLevel2();
+							phase = "chase";
+							knotenpunkte = new ArrayList<Knotenpunkt>();
+							createknotenpunkt();
+						}
 						zeichnePacManundGeister();
-						updateTimer();
-						scoreBerechnen();
-					}
+						while (!gewonnen && !verloren) {
 
-				}
-				System.out.println("Ok");
-				gewonnen = false;
-				if(!gewonnen && !verloren) {
-					resetLevel2();
-				}
-				zeichnePacManundGeister();
-				while (!gewonnen && !verloren) {
+							try {
+								Thread.sleep(111);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							c++;
+							if (c % 2 == 0) {
+								for (Knotenpunkt k : knotenpunkte) {
+									k.reset();
+								}
 
-					try {
-						Thread.sleep(111);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					c++;
-					if (c % 2 == 0) {
-						for (Knotenpunkt k : knotenpunkte) {
-							k.reset();
+								if (taste != null) {
+									if (taste.equals("A")) {
+										if (keineWand(taste, p.getXpos(), p.getYpos())) {
+											alteTaste = "A";
+										}
+									}
+									if (taste.equals("D")) {
+										if (keineWand(taste, p.getXpos(), p.getYpos())) {
+											alteTaste = "D";
+										}
+									}
+									if (taste.equals("W")) {
+										if (keineWand(taste, p.getXpos(), p.getYpos())) {
+											alteTaste = "W";
+										}
+									}
+									if (taste.equals("S")) {
+										if (keineWand(taste, p.getXpos(), p.getYpos())) {
+											alteTaste = "S";
+										}
+									}
+								}
+								if (alteTaste != null) {
+									if (alteTaste.equals("A")) {
+										if (p.getXpos() == 1 && p.getYpos() == 16) {
+											p.setXpos(30);
+										}
+										if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
+											farbeLoeschen(p.getXpos(), p.getYpos());
+											p.setXpos(p.getXpos() - 1);
+										}
+									}
+									if (alteTaste.equals("D")) {
+										if (p.getXpos() == 29 && p.getYpos() == 16) {
+											p.setXpos(0);
+										}
+										if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
+											farbeLoeschen(p.getXpos(), p.getYpos());
+											p.setXpos(p.getXpos() + 1);
+										}
+									}
+									if (alteTaste.equals("W")) {
+										if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
+											farbeLoeschen(p.getXpos(), p.getYpos());
+											p.setYpos(p.getYpos() - 1);
+										}
+									}
+									if (alteTaste.equals("S")) {
+										if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
+											farbeLoeschen(p.getXpos(), p.getYpos());
+											p.setYpos(p.getYpos() + 1);
+										}
+									}
+								}
+
+								for (Geister g : geister) {
+									g.findeWeg(p.getXpos(), p.getYpos());
+									switch (g.getRichtung()) {
+									case "hoch":
+										g.setY(g.getY() - 1);
+										break;
+									case "rechts":
+										if (g.getX() == 29 && g.getY() == 16) {
+											g.setX(0);
+										}
+										g.setX(g.getX() + 1);
+										break;
+									case "links":
+										if (g.getX() == 1 && g.getY() == 16) {
+											g.setX(30);
+										}
+										g.setX(g.getX() - 1);
+										break;
+									case "runter":
+										g.setY(g.getY() + 1);
+										break;
+									default:
+										break;
+									}
+
+								}
+								überprüfeSieg();
+								clearmap();
+								zeichnePacManundGeister();
+								updateTimer();
+								scoreBerechnen();
+
+							}
 						}
-
-						if (taste != null) {
-							if (taste.equals("A")) {
-								if (keineWand(taste, p.getXpos(), p.getYpos())) {
-									alteTaste = "A";
-								}
+						if(verloren) {
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-							if (taste.equals("D")) {
-								if (keineWand(taste, p.getXpos(), p.getYpos())) {
-									alteTaste = "D";
-								}
-							}
-							if (taste.equals("W")) {
-								if (keineWand(taste, p.getXpos(), p.getYpos())) {
-									alteTaste = "W";
-								}
-							}
-							if (taste.equals("S")) {
-								if (keineWand(taste, p.getXpos(), p.getYpos())) {
-									alteTaste = "S";
-								}
-							}
+							showEndScreen();
 						}
-						if (alteTaste != null) {
-							if (alteTaste.equals("A")) {
-								if (p.getXpos() == 1 && p.getYpos() == 16) {
-									p.setXpos(30);
-								}
-								if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
-									farbeLoeschen(p.getXpos(), p.getYpos());
-									p.setXpos(p.getXpos() - 1);
-								}
-							}
-							if (alteTaste.equals("D")) {
-								if (p.getXpos() == 29 && p.getYpos() == 16) {
-									p.setXpos(0);
-								}
-								if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
-									farbeLoeschen(p.getXpos(), p.getYpos());
-									p.setXpos(p.getXpos() + 1);
-								}
-							}
-							if (alteTaste.equals("W")) {
-								if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
-									farbeLoeschen(p.getXpos(), p.getYpos());
-									p.setYpos(p.getYpos() - 1);
-								}
-							}
-							if (alteTaste.equals("S")) {
-								if (keineWand(alteTaste, p.getXpos(), p.getYpos())) {
-									farbeLoeschen(p.getXpos(), p.getYpos());
-									p.setYpos(p.getYpos() + 1);
-								}
-							}
-						}
-
-						for (Geister g : geister) {
-							g.findeWeg(p.getXpos(), p.getYpos());
-							switch (g.getRichtung()) {
-							case "hoch":
-								g.setY(g.getY() - 1);
-								break;
-							case "rechts":
-								if (g.getX() == 29 && g.getY() == 16) {
-									g.setX(0);
-								}
-								g.setX(g.getX() + 1);
-								break;
-							case "links":
-								if (g.getX() == 1 && g.getY() == 16) {
-									g.setX(30);
-								}
-								g.setX(g.getX() - 1);
-								break;
-							case "runter":
-								g.setY(g.getY() + 1);
-								break;
-							default:
-								break;
-							}
-
-						}
-						überprüfeSieg();
-						clearmap();
-						zeichnePacManundGeister();
-						updateTimer();
-						scoreBerechnen();
-
 					}
 				}
 			}
-
+	
 		});
 		t.start();
+	}
+	
+	protected void createknotenpunkt() {
+		// TODO Auto-generated method stub
+		for (int i = 1; i <= felderanzahl; i++) {
+			for (int j = 1; j < 32; j++) {
+				if (!farbeGeben(i, j).equals(borderfarbe)) {
+					if(!((i>=13 && i<=17) && (j>=15 && j<=17))) {
+						Knotenpunkt k = new Knotenpunkt(i, j);
+						knotenpunkte.add(k);
+					}
+				}
+			}
+		}
+	}
+
+	private void showEndScreen() {
+		// TODO Auto-generated method stub
+		shown = true;
+		dispose();
+		new EndScreen(scoreBerechnen());
 	}
 
 	protected void algorythmusvorbereitenundPower_UPerfassen() {
@@ -502,6 +543,7 @@ public class Master extends Kaestchen {
 	}
 
 	private void powerupaufsammeln(Knotenpunkt k) {
+		wartenfürpowerUP = 0;
 		this.sound("Pacman_Eating_Cherry_Sound_Effect.wav", volume);
 		// TODO Auto-generated method stub
 		k.power_up = false;
@@ -509,7 +551,7 @@ public class Master extends Kaestchen {
 	}
 
 	void createPowerUp() {
-		if(!phase.equals(Geist.FRIGHTENED)) {
+		if(!phase.equals(Geist.FRIGHTENED)&&wartenfürpowerUP>600) {
 			// Wenn es nur auf bereits eingesammelten Feldern spawnt
 			ArrayList<Knotenpunkt> notclaimed = new ArrayList<>();
 			for (Knotenpunkt k : knotenpunkte) {
@@ -592,6 +634,7 @@ public class Master extends Kaestchen {
 				return;
 			}
 		}
+		gewonnen = true;
 	}
 
 	private void createGeister() {
@@ -615,6 +658,7 @@ public class Master extends Kaestchen {
 				}
 			}
 		}
+		ladeMatrix("Map");
 	}
 
 	private void createGeister2() {
@@ -638,6 +682,7 @@ public class Master extends Kaestchen {
 //				}
 			}
 		}
+		ladeMatrix("Map");
 	}
 
 	private void zeichnePacManundGeister() {
@@ -686,25 +731,27 @@ public class Master extends Kaestchen {
 				this.bildSetzen(g.getX(), g.getY(), "GeistFrightened.gif", 0);
 			}
 		}
-		String img = "pacmanOben.gif";
+		String img = "pacmanRechts.gif";
+		double ausrichtung = 0;
 		if(!p.getLeben()) {
 			 img = "pacmanDies.gif";
+			 ausrichtung = Math.PI/2;
 		}
 		switch (alteTaste) {
 		case "W":
-			bildSetzen(p.getXpos(), p.getYpos(), img, 0);
+			bildSetzen(p.getXpos(), p.getYpos(), img, -Math.PI / 2 + ausrichtung);
 			break;
 		case "A":
-			bildSetzen(p.getXpos(), p.getYpos(), img, -Math.PI / 2);
+			bildSetzen(p.getXpos(), p.getYpos(), img, Math.PI + ausrichtung);
 			break;
 		case "S":
-			bildSetzen(p.getXpos(), p.getYpos(), img, -Math.PI);
+			bildSetzen(p.getXpos(), p.getYpos(), img, Math.PI / 2 + ausrichtung);
 			break;
 		case "D":
-			bildSetzen(p.getXpos(), p.getYpos(), img, Math.PI / 2);
+			bildSetzen(p.getXpos(), p.getYpos(), img, 0 + ausrichtung);
 			break;
 		default:
-			bildSetzen(p.getXpos(), p.getYpos(), img, 0);
+			bildSetzen(p.getXpos(), p.getYpos(), img, 0 + ausrichtung);
 			break;
 		}
 	}
@@ -755,7 +802,7 @@ public class Master extends Kaestchen {
 		}
 	}
 
-	void scoreBerechnen() {
+	int scoreBerechnen() {
 		int counter = 0;
 		for (Knotenpunkt k : knotenpunkte) {
 			if (k.claimed) {
@@ -763,7 +810,9 @@ public class Master extends Kaestchen {
 			}
 
 		}
+		System.out.println(knotenpunkte.size() );
 		setScore(counter);
+		return counter;
 	}
 
 	void setScore(int score) {

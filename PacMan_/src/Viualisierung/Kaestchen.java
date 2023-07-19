@@ -66,7 +66,7 @@ public abstract class Kaestchen extends JFrame {
 	 * Standardkonstruktor, erzeugt 20x20 Kästchen der Breite 20 und Höhe 20
 	 */
 	public Kaestchen() {
-		this(20, 20, 20, 20);
+		this(0,0,20, 20, 20, 20);
 	}
 
 	/**
@@ -81,8 +81,8 @@ public abstract class Kaestchen extends JFrame {
 	 * @param kaeAnzY
 	 *            - Anzahl der Kästchen vertikal
 	 */
-	public Kaestchen(int kaeBreite, int kaeHoehe, int kaeAnzX, int kaeAnzY) {
-		this(kaeBreite, kaeHoehe, kaeAnzX, kaeAnzY, false);
+	public Kaestchen(int xPos,int yPos,int kaeBreite, int kaeHoehe, int kaeAnzX, int kaeAnzY) {
+		this(xPos,yPos,kaeBreite, kaeHoehe, kaeAnzX, kaeAnzY, false);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public abstract class Kaestchen extends JFrame {
 	 * @param ohneRand
 	 *            - true oder false
 	 */
-	public Kaestchen(int kaeBreite, int kaeHoehe, int kaeAnzX, int kaeAnzY, boolean ohneRand) {
+	public Kaestchen(int xPos,int yPos, int kaeBreite, int kaeHoehe, int kaeAnzX, int kaeAnzY, boolean ohneRand) {
 		if (ohneRand) {
 			strichfarbe = farbeDurchsichtig;
 			nichtfuellbreite = 0;
@@ -230,6 +230,7 @@ public abstract class Kaestchen extends JFrame {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setBackground(new java.awt.Color(255, 255, 255));
 		setSize(fensterbreite + 16, fensterhoehe + 40);
+		setBounds(xPos, yPos, fensterbreite + 16, fensterhoehe + 40);
 		setTitle("KaestchenV2.0");
 		setResizable(false);
 		setVisible(true);
